@@ -10,6 +10,10 @@ if [[ ! -e "/var/apps/docker/ufw.done" ]]; then
   touch "/var/apps/docker/ufw.done"
 fi
 
+if [[ "`which lxc-attach`" == "" ]]; then
+  apt-get install -y lxc
+fi
+
 if [[ "`which docker`" == "" ]]; then
   apt-get update
   apt-get install -y docker.io
@@ -25,4 +29,8 @@ if [[ "`which docker`" == "" ]]; then
 
   apt-get install -y curl
   curl -s https://get.docker.io/ubuntu/ | sh
+
+  cp ./submodules/docker/files/conf /etc/default/docker
+  service docker restart
 fi
+
