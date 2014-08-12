@@ -1,5 +1,15 @@
 #!/bin/bash
 
+#-----------
+# Configurations
+#-----------
+
+DOCKER_SUPPORT_LXC=${DOCKER_SUPPORT_LXC-false}
+
+#-----------
+# Install Script
+#-----------
+
 
 mkdir -p /var/apps/docker/
 
@@ -8,10 +18,6 @@ if [[ ! -e "/var/apps/docker/ufw.done" ]]; then
   ufw reload
   ufw allow 4243/tcp
   touch "/var/apps/docker/ufw.done"
-fi
-
-if [[ "`which lxc-attach`" == "" ]]; then
-  apt-get install -y lxc
 fi
 
 if [[ "`which docker`" == "" ]]; then
@@ -29,8 +35,18 @@ if [[ "`which docker`" == "" ]]; then
 
   apt-get install -y curl
   curl -s https://get.docker.io/ubuntu/ | sh
+fi
 
+if [[ "$DOCKER_SUPPORT_LXC" == true ]]; then
+  apt-get install -y lxc
   cp ./submodules/docker/files/conf /etc/default/docker
+fi
+
+if [[ "`service docker status | grep process`" == "" ]]; then
   service docker restart
 fi
+
+
+
+
 

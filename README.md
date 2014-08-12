@@ -20,6 +20,15 @@ Now you can install docker into your project
 ./capbash install docker
 ```
 
+# Configurations #
+
+The available configurations include:
+
+```
+DOCKER_SUPPORT_LXC=${DOCKER_SUPPORT_LXC-false}
+```
+
+
 # Deploy to Remote Server #
 
 To push the docker script to your server, all you need if the IP or hostname of your server (e.g. 192.167.0.48) and your root password.
