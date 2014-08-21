@@ -1,0 +1,12 @@
+#!/bin/bash
+printf "%b" "#!/bin/bash
+CONTAINER_ID=\$(docker ps | grep $NAME | awk '{print \$1}')
+if [[ \"\$CONTAINER_ID\" == '' ]]; then
+  echo ''
+else
+  IP=\$(docker inspect \$CONTAINER_ID | python -c 'import json,sys;obj=json.load(sys.stdin);print obj[0][\"NetworkSettings\"][\"IPAddress\"]')
+  echo \"\$IP\"
+fi
+" > $DIR/ip
+
+chmod 755 $DIR/ip

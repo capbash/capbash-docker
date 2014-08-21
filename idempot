@@ -1,0 +1,12 @@
+#!/bin/bash
+printf "%b" "#!/bin/bash
+RUNNING=\`docker ps | grep ${NAME}\`
+if [[ \"\$RUNNING\" == '' ]]; then
+  echo 'Starting ${NAME} container...'
+  $DIR/start
+else
+  echo '${NAME} container already running'
+fi
+" > $DIR/idempot
+
+chmod 755 $DIR/idempot

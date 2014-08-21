@@ -1,0 +1,13 @@
+#!/bin/bash
+printf "%b" "#!/bin/bash
+CONTAINER_ID=\$(docker ps | grep $NAME | awk '{print \$1}')
+if [[ \"\$CONTAINER_ID\" == '' ]]; then
+  echo '$NAME container already stopped, nothing to do.'
+else
+  echo 'Stopping $NAME...'
+  docker stop \$CONTAINER_ID
+  echo 'DONE Stopping $NAME.'
+fi
+" > $DIR/stop
+
+chmod 755 $DIR/stop
