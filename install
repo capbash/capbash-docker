@@ -5,6 +5,8 @@
 #-----------
 
 DOCKER_SUPPORT_LXC=${DOCKER_SUPPORT_LXC-false}
+DOCKER_LAUNCHER_DIR=${DOCKER_LAUNCHER_DIR-/var/local/docker}
+DOCKER_FORCE_INSTALL=${DOCKER_FORCE_INSTALL-false}
 
 #-----------
 # Install Script
@@ -12,14 +14,19 @@ DOCKER_SUPPORT_LXC=${DOCKER_SUPPORT_LXC-false}
 
 echo "Install docker..."
 
-mkdir -p /var/apps/docker/
+if [[ "$DOCKER_FORCE_INSTALL" == true ]]; then
+  echo " -- forcing a install of docker if it already existed"
+  rm -rf ${DOCKER_LAUNCHER_DIR}
+fi
 
-if [[ ! -e "/var/apps/docker/ufw.done" ]]; then
+mkdir -p ${DOCKER_LAUNCHER_DIR}
+
+if [[ ! -e "${DOCKER_LAUNCHER_DIR}/ufw.done" ]]; then
   echo "  -- setting ufw.done"
   sed -i 's|DEFAULT_FORWARD_POLICY="DROP"|DEFAULT_FORWARD_POLICY="ACCEPT"|g' /etc/default/ufw
   ufw reload
   ufw allow 4243/tcp
-  touch "/var/apps/docker/ufw.done"
+  touch "${DOCKER_LAUNCHER_DIR}/ufw.done"
 fi
 
 if [[ "`which docker`" == "" ]]; then
