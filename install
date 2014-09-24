@@ -53,7 +53,7 @@ if [[ "$DOCKER_SUPPORT_LXC" == true ]]; then
   cp ./submodules/docker/files/conf /etc/default/docker
 fi
 
-if [[ "`service docker status | grep process`" == "" ]]; then
+if [[ "`service docker status | grep process`" == "" ]] && [[ "`service docker status | grep \"is running\"`" == "" ]]; then
   echo "  -- restarting service"
   service docker restart
 fi
