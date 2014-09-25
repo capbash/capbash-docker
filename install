@@ -16,42 +16,61 @@ echo "Install docker..."
 
 if [[ "$DOCKER_FORCE_INSTALL" == true ]]; then
   echo " -- forcing a install of docker if it already existed"
+  if [[ -e ${DOCKER_LAUNCHER_DIR}/kill ]]; then
+    ${DOCKER_LAUNCHER_DIR}/kill
+  fi
   rm -rf ${DOCKER_LAUNCHER_DIR}
 fi
 
 mkdir -p ${DOCKER_LAUNCHER_DIR}
 
-if [[ ! -e "${DOCKER_LAUNCHER_DIR}/ufw.done" ]]; then
-  echo "  -- setting ufw.done"
-  sed -i 's|DEFAULT_FORWARD_POLICY="DROP"|DEFAULT_FORWARD_POLICY="ACCEPT"|g' /etc/default/ufw
-  ufw reload
-  ufw allow 4243/tcp
-  touch "${DOCKER_LAUNCHER_DIR}/ufw.done"
+if [[ "$OS" == "ubuntu" ]]; then
+  if [[ ! -e "${DOCKER_LAUNCHER_DIR}/ufw.done" ]]; then
+    echo "  -- Configuring /etc/default/ufw"
+    mkdir -p /etc/default
+    sed -i 's|DEFAULT_FORWARD_POLICY="DROP"|DEFAULT_FORWARD_POLICY="ACCEPT"|g' /etc/default/ufw
+    ufw reload
+    ufw allow 4243/tcp
+    touch "${DOCKER_LAUNCHER_DIR}/ufw.done"
+  else
+    echo "  -- Already configured /etc/default/ufw"
+  fi
 fi
 
-if [[ "`which docker 2> /dev/null`" == "" ]]; then
+if [[ "$DOCKER_FORCE_INSTALL" == true ]] || [[ "`which docker 2> /dev/null`" == "" ]]; then
   echo "  -- install docker.io"
-  apt-get update
-  apt-get install -y docker.io
-  ln -sf /usr/bin/docker.io /usr/local/bin/docker
-  sed -i '$acomplete -F _docker docker' /etc/bash_completion.d/docker.io
-
-  [ -e /usr/lib/apt/methods/https ] || {
+  if [[ "$OS" == "ubuntu" ]]; then
     apt-get update
-    apt-get install -y apt-transport-https
-  }
+    apt-get install -y docker.io
+    ln -sf /usr/bin/docker.io /usr/local/bin/docker
+    sed -i '$acomplete -F _docker docker' /etc/bash_completion.d/docker.io
 
-  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
+    [ -e /usr/lib/apt/methods/https ] || {
+      apt-get update
+      apt-get install -y apt-transport-https
+    }
 
-  apt-get install -y curl
-  curl -s https://get.docker.io/ubuntu/ | sh
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
+
+    apt-get install -y curl
+    curl -s https://get.docker.io/ubuntu/ | sh
+  else
+    # subscription-manager repos --enable=rhel-7-server-extras-rpms
+    yum install -y docker
+  fi
 fi
+
+echo "  -- Running `docker --version`"
 
 if [[ "$DOCKER_SUPPORT_LXC" == true ]]; then
   echo "  -- adding LXC support"
   apt-get install -y lxc
   cp ./submodules/docker/files/conf /etc/default/docker
 fi
+
+echo "  -- Installing helper scripts"
+cp ./submodules/docker/files/purge $DOCKER_LAUNCHER_DIR/purge
+cp ./submodules/docker/files/kill $DOCKER_LAUNCHER_DIR/kill
 
 if [[ "`service docker status | grep process`" == "" ]] && [[ "`service docker status | grep \"is running\"`" == "" ]]; then
   echo "  -- restarting service"

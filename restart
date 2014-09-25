@@ -2,11 +2,11 @@
 printf "%b" "#!/bin/bash
 CONTAINER_ID=\$(docker ps --no-trunc | grep $NAME | awk '{print \$1}')
 if [[ \"\$CONTAINER_ID\" == \"\" ]]; then
-  echo 'Starting ${NAME} container...'
   $DIR/start
 else
-  echo '${NAME} container already running'
+  $DIR/stop
+  $DIR/start
 fi
-" > $DIR/idempot
+" > $DIR/restart
 
-chmod 755 $DIR/idempot
+chmod 755 $DIR/restart

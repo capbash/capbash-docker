@@ -1,11 +1,11 @@
 #!/bin/bash
 printf "%b" "#!/bin/bash
-CONTAINER_ID=\$(docker ps | grep $NAME | awk '{print \$1}')
+CONTAINER_ID=\$(docker ps --no-trunc | grep $NAME | awk '{print \$1}')
 if [[ \"\$CONTAINER_ID\" == '' ]]; then
   echo '$NAME container already stopped, nothing to do.'
 else
   echo 'Stopping $NAME...'
-  docker stop \$CONTAINER_ID
+  docker stop \$CONTAINER_ID 2>1 >> /dev/null
   if [[ \"$HOST\" != \"\" ]]; then
     sed -i \"s|.*$HOST||g\" /etc/hosts
   fi
