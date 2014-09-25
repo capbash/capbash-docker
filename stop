@@ -6,6 +6,9 @@ if [[ \"\$CONTAINER_ID\" == '' ]]; then
 else
   echo 'Stopping $NAME...'
   docker stop \$CONTAINER_ID
+  if [[ \"$HOST\" != \"\" ]]; then
+    sed -i \"s|.*$HOST||g\" /etc/hosts
+  fi
   echo 'DONE Stopping $NAME.'
 fi
 " > $DIR/stop

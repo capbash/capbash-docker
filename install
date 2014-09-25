@@ -29,7 +29,7 @@ if [[ ! -e "${DOCKER_LAUNCHER_DIR}/ufw.done" ]]; then
   touch "${DOCKER_LAUNCHER_DIR}/ufw.done"
 fi
 
-if [[ "`which docker`" == "" ]]; then
+if [[ "`which docker 2> /dev/null`" == "" ]]; then
   echo "  -- install docker.io"
   apt-get update
   apt-get install -y docker.io

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [[ "$DEBUG" == true ]]; then
+  (cd ${LAUNCHER_DIR} && docker build -t $NAME .)
+else
+  (cd ${LAUNCHER_DIR} && docker build -t $NAME .) >> /dev/null
+fi
