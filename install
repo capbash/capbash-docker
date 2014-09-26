@@ -12,10 +12,10 @@ DOCKER_FORCE_INSTALL=${DOCKER_FORCE_INSTALL-false}
 # Install Script
 #-----------
 
-echo "Install docker..."
+echo "Installing DOCKER..."
 
 if [[ "$DOCKER_FORCE_INSTALL" == true ]]; then
-  echo " -- forcing a install of docker if it already existed"
+  echo "  -- forcing a install of docker if it already existed"
   if [[ -e ${DOCKER_LAUNCHER_DIR}/kill ]]; then
     ${DOCKER_LAUNCHER_DIR}/kill
   fi
@@ -77,4 +77,4 @@ if [[ "`service docker status | grep process`" == "" ]] && [[ "`service docker s
   service docker restart
 fi
 
-echo "DONE Install docker."
+echo "DONE, Installing DOCKER."

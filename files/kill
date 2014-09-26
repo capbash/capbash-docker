@@ -4,12 +4,12 @@ echo "Deleting all containers and images"
 
 CONTAINERS=`$(docker ps -a -q)`
 if [[ "$CONTAINERS" != "" ]]; then
-  echo " -- Deleting containers"
+  echo "  -- Deleting containers"
   docker rm --force $CONTAINERS
 fi
 
 IMAGES=`$(docker images -q)`
 if [[ "$IMAGES" != "" ]]; then
-  echo " -- Deleting images"
+  echo "  -- Deleting images"
   docker rmi --force $IMAGES
 fi
