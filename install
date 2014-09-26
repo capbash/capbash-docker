@@ -71,6 +71,7 @@ fi
 echo "  -- Installing helper scripts"
 cp ./submodules/docker/files/purge $DOCKER_LAUNCHER_DIR/purge
 cp ./submodules/docker/files/kill $DOCKER_LAUNCHER_DIR/kill
+cp ./submodules/docker/files/clean $DOCKER_LAUNCHER_DIR/clean
 
 if [[ "`service docker status | grep process`" == "" ]] && [[ "`service docker status | grep \"is running\"`" == "" ]]; then
   echo "  -- restarting service"
