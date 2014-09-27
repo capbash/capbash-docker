@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# TODO: turn into a list
+KEY1=$1
+VAL1=$2
+
+KEY2=$3
+VAL2=$4
+
+if [[ "$CODE" == "" ]]; then
+  NEWFILE="${TEMPLATE}.copyif"
+
+  cp ${TEMPLATE} ${NEWFILE}
+
+  if [[ "$KEY1" != "" ]]; then
+    sed -i "s|$KEY1|$VAL1|g" ${NEWFILE}
+  fi
+
+  if [[ "$KEY2" != "" ]]; then
+    sed -i "s|$KEY2|$VAL2|g" ${NEWFILE}
+  fi
+
+else
+  NEWFILE=${LOCATION}.copyif
+  echo "$CODE" > $NEWFILE
+fi
+
+DIFF=$(diff $NEWFILE $LOCATION) 2> /dev/null
+
+if [[ "$DIFF" != "" ]]; then
+  echo " -- $LOCATION file updated"
+  cp ${NEWFILE} ${LOCATION}
+elif [[ "$DEBUG" == true ]]; then
+  echo " -- $LOCATION unchanged"
+fi
+rm -f $NEWFILE
