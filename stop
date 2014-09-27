@@ -5,7 +5,7 @@ if [[ \"\$CONTAINER_ID\" == '' ]]; then
   echo '$NAME container already stopped, nothing to do.'
 else
   echo 'Stopping $NAME...'
-  docker stop \$CONTAINER_ID 2>1 >> /dev/null
+  docker stop \$CONTAINER_ID > /dev/null 2>&1
   if [[ \"$HOST\" != \"\" ]]; then
     sed -i \"s|.*$HOST||g\" /etc/hosts
   fi

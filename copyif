@@ -25,12 +25,18 @@ else
   echo "$CODE" > $NEWFILE
 fi
 
-DIFF=$(diff $NEWFILE $LOCATION) 2> /dev/null
 
-if [[ "$DIFF" != "" ]]; then
-  echo " -- $LOCATION file updated"
+if [[ ! -e $LOCATION ]]; then
+  echo "  -- $LOCATION created"
   cp ${NEWFILE} ${LOCATION}
-elif [[ "$DEBUG" == true ]]; then
-  echo " -- $LOCATION unchanged"
+else
+  DIFF=$(diff $NEWFILE $LOCATION) 2> /dev/null
+
+  if [[ "$DIFF" != "" ]]; then
+    echo "  -- $LOCATION updated"
+    cp ${NEWFILE} ${LOCATION}
+  elif [[ "$DEBUG" == true ]]; then
+    echo "  -- $LOCATION unchanged"
+  fi
 fi
 rm -f $NEWFILE

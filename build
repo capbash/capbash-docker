@@ -4,5 +4,5 @@ echo "  -- Building $NAME (${LAUNCHER_DIR}/Dockerfile)"
 if [[ "$DEBUG" == true ]]; then
   (cd ${LAUNCHER_DIR} && docker build -t $NAME .)
 else
-  (cd ${LAUNCHER_DIR} && docker build -t $NAME .) 2>1 >> /dev/null
+  (cd ${LAUNCHER_DIR} && docker build -t $NAME .) > /dev/null 2>&1
 fi
