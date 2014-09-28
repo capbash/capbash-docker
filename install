@@ -56,7 +56,8 @@ if [[ "$DOCKER_FORCE_INSTALL" == true ]] || [[ "`which docker 2> /dev/null`" == 
     curl -s https://get.docker.io/ubuntu/ | sh
   else
     # subscription-manager repos --enable=rhel-7-server-extras-rpms
-    yum install -y docker
+    yum install -y docker-io
+    yum update -y docker-io
   fi
 fi
 
