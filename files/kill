@@ -10,7 +10,7 @@ if [[ "$CONTAINERS" != "" ]]; then
   find / -name container.pid | xargs rm -f
 fi
 
-IMAGES=`$(docker images -q)`
+IMAGES=$(docker images -q)
 if [[ "$IMAGES" != "" ]]; then
   echo "  -- Deleting images"
   docker rmi --force $IMAGES
