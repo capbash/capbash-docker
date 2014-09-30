@@ -7,6 +7,9 @@ VAL1=$2
 KEY2=$3
 VAL2=$4
 
+KEY3=$5
+VAL3=$6
+
 if [[ "$CODE" == "" ]]; then
   NEWFILE="${TEMPLATE}.copyif"
 
@@ -18,6 +21,10 @@ if [[ "$CODE" == "" ]]; then
 
   if [[ "$KEY2" != "" ]]; then
     sed -i "s|$KEY2|$VAL2|g" ${NEWFILE}
+  fi
+
+  if [[ "$KEY3" != "" ]]; then
+    sed -i "s|$KEY3|$VAL3|g" ${NEWFILE}
   fi
 
 else
