@@ -1,9 +1,12 @@
 #!/bin/bash
 
-exec 6>/dev/null
-if [[ "$DEBUG" == true ]]; then
-  exec 6>&1
+DEBUG=${DEBUG-false}
+
+if [[ "$DEBUG" == true ]] ; then
+  exec 3>&1
+else
+  exec 3>&1 &>/dev/null
 fi
 
-echo "  -- Building $NAME (${LAUNCHER_DIR}/Dockerfile)"
-(cd ${LAUNCHER_DIR} && docker build -t $NAME .) >6 2>&1
+echo "  -- Building $NAME (${LAUNCHER_DIR}/Dockerfile)" >&3
+(cd ${LAUNCHER_DIR} && docker build -t $NAME .)
