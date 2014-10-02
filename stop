@@ -1,6 +1,6 @@
 #!/bin/bash
 printf "%b" "#!/bin/bash
-CONTAINER_ID=\`cat ${DIR}/container.pid 2> /dev/null\`
+CONTAINER_ID=\`${DIR}/running\`
 if [[ \"\$CONTAINER_ID\" == '' ]]; then
   echo '$NAME container already stopped, nothing to do.'
 else

@@ -1,0 +1,6 @@
+#!/bin/bash
+NAME=$NAME HOST=$HOST DIR=$DIR ./submodules/docker/stop
+NAME=$NAME HOST=$HOST DIR=$DIR ./submodules/docker/running
+NAME=$NAME HOST=$HOST DIR=$DIR ./submodules/docker/restart
+NAME=$NAME HOST=$HOST DIR=$DIR ./submodules/docker/idempot
+NAME=$NAME HOST=$HOST DIR=$DIR ./submodules/docker/ip
