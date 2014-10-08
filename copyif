@@ -1,5 +1,7 @@
 #!/bin/bash
 
+IFMISSING=${IFMISSING-false}
+
 # TODO: turn into a list
 KEY1=$1
 VAL1=$2
@@ -10,40 +12,53 @@ VAL2=$4
 KEY3=$5
 VAL3=$6
 
-if [[ "$CODE" == "" ]]; then
-  NEWFILE="${TEMPLATE}.copyif"
+if [[ "$IFMISSING" == true ]]; then
 
-  cp ${TEMPLATE} ${NEWFILE}
-
-  if [[ "$KEY1" != "" ]]; then
-    sed -i "s|$KEY1|$VAL1|g" ${NEWFILE}
-  fi
-
-  if [[ "$KEY2" != "" ]]; then
-    sed -i "s|$KEY2|$VAL2|g" ${NEWFILE}
-  fi
-
-  if [[ "$KEY3" != "" ]]; then
-    sed -i "s|$KEY3|$VAL3|g" ${NEWFILE}
-  fi
-
-else
-  NEWFILE=${LOCATION}.copyif
-  echo "$CODE" > $NEWFILE
-fi
-
-
-if [[ ! -e $LOCATION ]]; then
-  echo "  -- $LOCATION created"
-  cp ${NEWFILE} ${LOCATION}
-else
-  DIFF=$(diff $NEWFILE $LOCATION) 2> /dev/null
-
-  if [[ "$DIFF" != "" ]]; then
-    echo "  -- $LOCATION updated"
-    cp ${NEWFILE} ${LOCATION}
+  if [[ ! -e $LOCATION ]]; then
+    echo "  -- $LOCATION created"
+    cp ${TEMPLATE} ${LOCATION}
   elif [[ "$DEBUG" == true ]]; then
-    echo "  -- $LOCATION unchanged"
+    echo "  -- $LOCATION already exists, skipping"
   fi
+
+else
+
+  if [[ "$CODE" == "" ]]; then
+    NEWFILE="${TEMPLATE}.copyif"
+
+    cp ${TEMPLATE} ${NEWFILE}
+
+    if [[ "$KEY1" != "" ]]; then
+      sed -i "s|$KEY1|$VAL1|g" ${NEWFILE}
+    fi
+
+    if [[ "$KEY2" != "" ]]; then
+      sed -i "s|$KEY2|$VAL2|g" ${NEWFILE}
+    fi
+
+    if [[ "$KEY3" != "" ]]; then
+      sed -i "s|$KEY3|$VAL3|g" ${NEWFILE}
+    fi
+
+  else
+    NEWFILE=${LOCATION}.copyif
+    echo "$CODE" > $NEWFILE
+  fi
+
+
+  if [[ ! -e $LOCATION ]]; then
+    echo "  -- $LOCATION created"
+    cp ${NEWFILE} ${LOCATION}
+  else
+    DIFF=$(diff $NEWFILE $LOCATION) 2> /dev/null
+
+    if [[ "$DIFF" != "" ]]; then
+      echo "  -- $LOCATION updated"
+      cp ${NEWFILE} ${LOCATION}
+    elif [[ "$DEBUG" == true ]]; then
+      echo "  -- $LOCATION unchanged"
+    fi
+  fi
+  rm -f $NEWFILE
+
 fi
-rm -f $NEWFILE
