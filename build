@@ -4,7 +4,6 @@ source ./submodules/bootstrap/logging
 notify "  -- Building DOCKER container $NAME (${LAUNCHER_DIR}/Dockerfile)"
 if [[ "$LOGLEVEL" -le "$DEBUG_LEVEL" ]]; then
   DOCKER_OUTPUT=${LAUNCHER_DIR}/docker_build.log
-  # (cd ${LAUNCHER_DIR} && docker build -t $NAME .)
 else
   DOCKER_OUTPUT=/dev/null
 fi
@@ -12,8 +11,6 @@ fi
 (cd ${LAUNCHER_DIR} && DOCKER_ERRORS=$(docker build -t $NAME . 2>&1 > $DOCKER_OUTPUT))
 debug_all $DOCKER_OUTPUT
 
-if [[ ! -z "$DOCKER_ERRORS" ]]; then
-  error "Error building DOCKER container $NAME (${LAUNCHER_DIR}/Dockerfile), due to ..."
-  error $DOCKER_ERRORS
-  exit 1
-fi
+ERRORS=$DOCKER_ERRORS \
+  MSG="Error building DOCKER container $NAME (${LAUNCHER_DIR}/Dockerfile), due to ..." \
+  ./submodules/bootstrap/exitif
