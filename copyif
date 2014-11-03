@@ -1,4 +1,5 @@
 #!/bin/bash
+source ./submodules/bootstrap/logging
 
 IFMISSING=${IFMISSING-false}
 
@@ -15,10 +16,10 @@ VAL3=$6
 if [[ "$IFMISSING" == true ]]; then
 
   if [[ ! -e $LOCATION ]]; then
-    echo "  -- $LOCATION created"
+    notify "  -- $LOCATION created"
     cp ${TEMPLATE} ${LOCATION}
-  elif [[ "$DEBUG" == true ]]; then
-    echo "  -- $LOCATION already exists, skipping"
+  else
+    debug "  -- $LOCATION already exists, skipping"
   fi
 
 else
@@ -42,21 +43,21 @@ else
 
   else
     NEWFILE=${LOCATION}.copyif
-    echo "$CODE" > $NEWFILE
+    notify "$CODE" > $NEWFILE
   fi
 
 
   if [[ ! -e $LOCATION ]]; then
-    echo "  -- $LOCATION created"
+    notify "  -- $LOCATION created"
     cp ${NEWFILE} ${LOCATION}
   else
     DIFF=$(diff $NEWFILE $LOCATION) 2> /dev/null
 
     if [[ "$DIFF" != "" ]]; then
-      echo "  -- $LOCATION updated"
+      notify "  -- $LOCATION updated"
       cp ${NEWFILE} ${LOCATION}
-    elif [[ "$DEBUG" == true ]]; then
-      echo "  -- $LOCATION unchanged"
+    else
+      debug "  -- $LOCATION unchanged"
     fi
   fi
   rm -f $NEWFILE

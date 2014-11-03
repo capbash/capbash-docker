@@ -1,6 +1,4 @@
 #!/bin/bash
 
-DEBUG=${DEBUG-false}
-
 echo "  -- Building $NAME (${LAUNCHER_DIR}/Dockerfile)"
 (cd ${LAUNCHER_DIR} && docker build -t $NAME .)
