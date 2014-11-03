@@ -43,7 +43,7 @@ else
 
   else
     NEWFILE=${LOCATION}.copyif
-    notify "$CODE" > $NEWFILE
+    echo "$CODE" > $NEWFILE
   fi
 
 

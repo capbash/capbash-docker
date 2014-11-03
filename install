@@ -1,4 +1,6 @@
 #!/bin/bash
+source ./submodules/bootstrap/logging
+set -euo pipefail ; IFS=$'\n\t'
 
 #-----------
 # Configurations
@@ -12,10 +14,10 @@ DOCKER_FORCE_INSTALL=${DOCKER_FORCE_INSTALL-false}
 # Install Script
 #-----------
 
-echo "Installing DOCKER..."
+notify "Installing DOCKER..."
 
 if [[ "$DOCKER_FORCE_INSTALL" == true ]]; then
-  echo "  -- forcing a install of docker if it already existed"
+  notify "  -- forcing a install of docker if it already existed"
   if [[ -e ${DOCKER_LAUNCHER_DIR}/kill ]]; then
     ${DOCKER_LAUNCHER_DIR}/kill
   fi
@@ -26,19 +28,19 @@ mkdir -p ${DOCKER_LAUNCHER_DIR}
 
 if [[ "$OS" == "ubuntu" ]]; then
   if [[ ! -e "${DOCKER_LAUNCHER_DIR}/ufw.done" ]]; then
-    echo "  -- Configuring /etc/default/ufw"
+    notify "  -- Configuring /etc/default/ufw"
     mkdir -p /etc/default
     sed -i 's|DEFAULT_FORWARD_POLICY="DROP"|DEFAULT_FORWARD_POLICY="ACCEPT"|g' /etc/default/ufw
     ufw reload
     ufw allow 4243/tcp
     touch "${DOCKER_LAUNCHER_DIR}/ufw.done"
   else
-    echo "  -- Already configured /etc/default/ufw"
+    debug "  -- Already configured /etc/default/ufw"
   fi
 fi
 
 if [[ "$DOCKER_FORCE_INSTALL" == true ]] || [[ "`which docker 2> /dev/null`" == "" ]]; then
-  echo "  -- install docker.io"
+  notify "  -- install docker.io"
   if [[ "$OS" == "ubuntu" ]]; then
     apt-get update
     apt-get install -y docker.io
@@ -61,22 +63,22 @@ if [[ "$DOCKER_FORCE_INSTALL" == true ]] || [[ "`which docker 2> /dev/null`" == 
   fi
 fi
 
-echo "  -- Running `docker --version`"
+notify "  -- Running `docker --version`"
 
 if [[ "$DOCKER_SUPPORT_LXC" == true ]]; then
-  echo "  -- adding LXC support"
+  debug "  -- adding LXC support"
   apt-get install -y lxc
   cp ./submodules/docker/files/conf /etc/default/docker
 fi
 
-echo "  -- Installing helper scripts"
+notify "  -- Installing helper scripts"
 cp ./submodules/docker/files/purge $DOCKER_LAUNCHER_DIR/purge
 cp ./submodules/docker/files/kill $DOCKER_LAUNCHER_DIR/kill
 cp ./submodules/docker/files/clean $DOCKER_LAUNCHER_DIR/clean
 
 if [[ "`service docker status | grep process`" == "" ]] && [[ "`service docker status | grep \"is running\"`" == "" ]]; then
-  echo "  -- restarting service"
+  notify "  -- restarting service"
   service docker restart
 fi
 
-echo "DONE, Installing DOCKER."
+notify "DONE, Installing DOCKER."

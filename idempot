@@ -1,11 +1,12 @@
 #!/bin/bash
 printf "%b" "#!/bin/bash
+source /usr/local/bin/logging
 CONTAINER_ID=\`${DIR}/running\`
 if [[ \"\$CONTAINER_ID\" == \"\" ]]; then
-  echo 'Starting ${NAME} container...'
+  notify 'Starting ${NAME} container...'
   $DIR/start
 else
-  echo '${NAME} container already running'
+  debug '${NAME} container already running'
 fi
 " > $DIR/idempot
 
