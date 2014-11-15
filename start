@@ -1,0 +1,13 @@
+#!/bin/bash
+DOCKER_CODE=`resolvevars ${DOCKER}`
+printf "%b" "#!/bin/bash
+source /usr/local/bin/logging
+CONTAINER_ID=\`${DIR}/running\`
+if [[ \"\$CONTAINER_ID\" == \"\" ]]; then
+  notify \"Starting ${NAME}\"
+  docker rm ${NAME} > /dev/num 2>&1
+  ${DOCKER_CODE} 2> /dev/null > ${DIR}/container.pid
+else
+  debug \"Container ${NAME}  already running, ${DIR}/restart to restart it\"
+fi
+" > $DIR/start
