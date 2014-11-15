@@ -1,16 +1,17 @@
 #!/bin/bash
 printf "%b" "#!/bin/bash
+source /usr/local/bin/logging
 CONTAINER_ID=\`${DIR}/running\`
 if [[ \"\$CONTAINER_ID\" == '' ]]; then
-  echo '$NAME container already stopped, nothing to do.'
+  debug '$NAME container already stopped, nothing to do.'
 else
-  echo 'Stopping $NAME...'
+  notify 'Stopping $NAME...'
   docker stop \$CONTAINER_ID > /dev/null 2>&1
   if [[ \"$HOST\" != \"\" ]]; then
     sed -i \"s|.*$HOST||g\" /etc/hosts
   fi
   rm -f ${DIR}/container.pid
-  echo 'DONE Stopping $NAME.'
+  notify 'DONE Stopping $NAME.'
 fi
 " > $DIR/stop
 
