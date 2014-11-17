@@ -1,17 +1,18 @@
 #!/bin/bash
 START=${START-ignore}
 DEBUG=${DEBUG-ignore}
+IMAGE_NAME=${IMAGE_NAME-$NAME}
 
-NAME=$NAME HOST=$HOST DIR=$DIR ./submodules/docker/stop
-NAME=$NAME HOST=$HOST DIR=$DIR ./submodules/docker/running
-NAME=$NAME HOST=$HOST DIR=$DIR ./submodules/docker/restart
-NAME=$NAME HOST=$HOST DIR=$DIR ./submodules/docker/idempot
-NAME=$NAME HOST=$HOST DIR=$DIR ./submodules/docker/ip
+NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR ./submodules/docker/stop
+NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR ./submodules/docker/running
+NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR ./submodules/docker/restart
+NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR ./submodules/docker/idempot
+NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR ./submodules/docker/ip
 
 if [[ "$START" != "ignore"  ]]; then
-  NAME=$NAME HOST=$HOST DIR=$DIR DOCKER=$START ./submodules/docker/start
+  NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR DOCKER=$START ./submodules/docker/start
 fi
 
 if [[ "$DEBUG" != "ignore"  ]]; then
-  NAME=$NAME HOST=$HOST DIR=$DIR DOCKER=$DEBUG ./submodules/docker/debug
+  NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR DOCKER=$DEBUG ./submodules/docker/debug
 fi

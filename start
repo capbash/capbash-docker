@@ -1,13 +1,20 @@
 #!/bin/bash
 DOCKER_CODE=`resolvevars ${DOCKER}`
+if [[ "$NAME" == "$IMAGE_NAME" ]]; then
+  FRIENDLY_NAME=$NAME
+else
+  FRIENDLY_NAME="${NAME} (${IMAGE_NAME})"
+fi
+
 printf "%b" "#!/bin/bash
 source /usr/local/bin/logging
 CONTAINER_ID=\`${DIR}/running\`
 if [[ \"\$CONTAINER_ID\" == \"\" ]]; then
-  notify \"Starting ${NAME}\"
+  notify \"Starting ${FRIENDLY_NAME}\"
   docker rm ${NAME} > /dev/num 2>&1
   ${DOCKER_CODE} 2> /dev/null > ${DIR}/container.pid
+  notify \"DONE, Starting ${FRIENDLY_NAME}\"
 else
-  debug \"Container ${NAME}  already running, ${DIR}/restart to restart it\"
+  debug \"Container ${FRIENDLY_NAME} already running, ${DIR}/restart to restart it\"
 fi
 " > $DIR/start

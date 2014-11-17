@@ -1,17 +1,23 @@
 #!/bin/bash
 DOCKER_CODE=`resolvevars ${DEBUG}`
+if [[ "$NAME" == "$IMAGE_NAME" ]]; then
+  FRIENDLY_NAME=$NAME
+else
+  FRIENDLY_NAME="${NAME} (${IMAGE_NAME})"
+fi
+
 printf "%b" "#!/bin/bash
 source /usr/local/bin/logging
 CONTAINER_NAME=\${1}
 if [[ \"\$CONTAINER_NAME\" == \"\" ]]; then
-  notify \"Starting debug mode for ${NAME}, randomly named\"
+  notify \"Starting debug mode for ${FRIENDLY_NAME}, randomly named\"
   CONTAINER_NAME_CMD=\"\"
 else
-  notify \"Starting debug mode for ${NAME} (\$CONTAINER_NAME)\"
+  notify \"Starting debug mode for ${FRIENDLY_NAME} (\$CONTAINER_NAME)\"
   CONTAINER_NAME_CMD=\"--name \$CONTAINER_NAME\"
   docker rm \$CONTAINER_NAME > /dev/num 2>&1
 fi
 ${DOCKER_CODE} \\
-  \$CONTAINER_NAME_CMD ${NAME} /bin/bash
+  \$CONTAINER_NAME_CMD ${IMAGE_NAME} /bin/bash
 
 " > $DIR/debug
