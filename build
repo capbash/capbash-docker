@@ -14,3 +14,15 @@ debug_all $DOCKER_OUTPUT
 ERRORS=$DOCKER_ERRORS \
   MSG="Error building DOCKER container $NAME (${LAUNCHER_DIR}/Dockerfile), due to ..." \
   ./submodules/bootstrap/exitif
+
+if [[ ! -z "$VERSION" ]]; then
+  debug "Tagging $NAME $VERSION"
+
+  DOCKER_ID=$(NAME=$NAME /var/capbash/submodules/docker/image)
+  (cd ${LAUNCHER_DIR} &&  DOCKER_ERRORS=$(docker tag $DOCKER_ID $NAME:$VERSION 2>&1 > $DOCKER_OUTPUT))
+  debug_all $DOCKER_OUTPUT
+fi
+
+ERRORS=$DOCKER_ERRORS \
+  MSG="Error tagging DOCKER container $NAME ${VERSION}, due to ..." \
+  ./submodules/bootstrap/exitif

@@ -18,3 +18,5 @@ else
   debug \"Container ${FRIENDLY_NAME} already running, ${DIR}/restart to restart it\"
 fi
 " > $DIR/start
+
+chmod 755 $DIR/start

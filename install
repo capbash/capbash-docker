@@ -16,6 +16,12 @@ DOCKER_FORCE_INSTALL=${DOCKER_FORCE_INSTALL-false}
 
 notify "Installing DOCKER..."
 
+if [[ "$LOGLEVEL" -le "$DEBUG_LEVEL" ]]; then
+  DOCKER_OUTPUT=${DOCKER_LAUNCHER_DIR}/docker_install.log
+else
+  DOCKER_OUTPUT=/dev/null
+fi
+
 if [[ "$DOCKER_FORCE_INSTALL" == true ]]; then
   notify "  -- forcing a install of docker if it already existed"
   if [[ -e ${DOCKER_LAUNCHER_DIR}/kill ]]; then
@@ -31,8 +37,10 @@ if [[ "$OS" == "ubuntu" ]]; then
     notify "  -- Configuring /etc/default/ufw"
     mkdir -p /etc/default
     sed -i 's|DEFAULT_FORWARD_POLICY="DROP"|DEFAULT_FORWARD_POLICY="ACCEPT"|g' /etc/default/ufw
-    ufw reload
-    ufw allow 4243/tcp
+    ufw reload 2>&1 > $DOCKER_OUTPUT
+    debug_all $DOCKER_OUTPUT
+    ufw allow 4243/tcp 2>&1 > $DOCKER_OUTPUT
+    debug_all $DOCKER_OUTPUT
     touch "${DOCKER_LAUNCHER_DIR}/ufw.done"
   else
     debug "  -- Already configured /etc/default/ufw"

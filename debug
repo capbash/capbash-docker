@@ -21,3 +21,5 @@ ${DOCKER_CODE} \\
   \$CONTAINER_NAME_CMD ${IMAGE_NAME} /bin/bash
 
 " > $DIR/debug
+
+chmod 755 $DIR/debug
