@@ -6,15 +6,15 @@ set -euo pipefail ; IFS=$'\n\t'
 # Configurations
 #-----------
 
+export DOCKER_LAUNCHER_DIR=${DOCKER_LAUNCHER_DIR-/var/local/docker}
 DOCKER_SUPPORT_LXC=${DOCKER_SUPPORT_LXC-false}
-DOCKER_LAUNCHER_DIR=${DOCKER_LAUNCHER_DIR-/var/local/docker}
 DOCKER_FORCE_INSTALL=${DOCKER_FORCE_INSTALL-false}
 
 #-----------
 # Install Script
 #-----------
 
-notify "Installing DOCKER..."
+notify "Installing DOCKER ($OS)..."
 
 if [[ "$LOGLEVEL" -le "$DEBUG_LEVEL" ]]; then
   DOCKER_OUTPUT=${DOCKER_LAUNCHER_DIR}/docker_install.log
@@ -30,7 +30,8 @@ if [[ "$DOCKER_FORCE_INSTALL" == true ]]; then
   rm -rf ${DOCKER_LAUNCHER_DIR}
 fi
 
-mkdir -p ${DOCKER_LAUNCHER_DIR}
+./submodules/bootstrap/mkdir DOCKER_LAUNCHER_DIR
+
 
 if [[ "$OS" == "ubuntu" ]]; then
   if [[ ! -e "${DOCKER_LAUNCHER_DIR}/ufw.done" ]]; then
@@ -64,6 +65,9 @@ if [[ "$DOCKER_FORCE_INSTALL" == true ]] || [[ "`which docker 2> /dev/null`" == 
 
     apt-get install -y curl
     curl -s https://get.docker.io/ubuntu/ | sh
+  elif [[ "$OS" == "mac" ]]; then
+    error "Please install boot2docker (https://docs.docker.com/installation/mac/)"
+    exit 1
   else
     # subscription-manager repos --enable=rhel-7-server-extras-rpms
     yum install -y docker-io
@@ -80,13 +84,21 @@ if [[ "$DOCKER_SUPPORT_LXC" == true ]]; then
 fi
 
 notify "  -- Installing helper scripts"
-cp ./submodules/docker/files/purge $DOCKER_LAUNCHER_DIR/purge
-cp ./submodules/docker/files/kill $DOCKER_LAUNCHER_DIR/kill
-cp ./submodules/docker/files/clean $DOCKER_LAUNCHER_DIR/clean
+TEMPLATE=./submodules/docker/files/purge LOCATION=$DOCKER_LAUNCHER_DIR/purge ./submodules/docker/copyif
+TEMPLATE=./submodules/docker/files/kill LOCATION=$DOCKER_LAUNCHER_DIR/kill ./submodules/docker/copyif
+TEMPLATE=./submodules/docker/files/clean LOCATION=$DOCKER_LAUNCHER_DIR/clean ./submodules/docker/copyif
+TEMPLATE=./submodules/docker/files/shell LOCATION=$DOCKER_LAUNCHER_DIR/shell ./submodules/docker/copyif
 
-if [[ "`service docker status | grep process`" == "" ]] && [[ "`service docker status | grep \"is running\"`" == "" ]]; then
+if [[ "$OS" != "mac" ]] && [[ "`service docker status | grep process`" == "" ]] && [[ "`service docker status | grep \"is running\"`" == "" ]]; then
   notify "  -- restarting service"
   service docker restart
+fi
+
+if [[ "$OS" == "mac" ]]; then
+  if [[ "$(docker ps 2>&1)" == *"Cannot connect to the Docker daemon"* ]]; then
+    error "Please run 'source $DOCKER_LAUNCHER_DIR/shell' to enable docker in your shell, and then re-run your deploy script"
+    exit 1
+  fi
 fi
 
 notify "DONE, Installing DOCKER."
