@@ -1,5 +1,6 @@
 #!/bin/bash
-source ./submodules/bootstrap/logging
+[[ -z "$INFO_LEVEL" ]] && source ./submodules/bootstrap/logging
+set -euo pipefail ; IFS=$'\n\t'
 
 notify "  -- Building DOCKER container $NAME (${LAUNCHER_DIR}/Dockerfile)"
 if [[ "$LOGLEVEL" -le "$DEBUG_LEVEL" ]]; then

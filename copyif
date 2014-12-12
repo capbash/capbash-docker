@@ -1,5 +1,5 @@
 #!/bin/bash
-source ./submodules/bootstrap/logging
+[[ -z "$INFO_LEVEL" ]] && source ./submodules/bootstrap/logging
 
 IFMISSING=${IFMISSING-false}
 
@@ -29,16 +29,20 @@ else
 
     cp ${TEMPLATE} ${NEWFILE}
 
+    if [[ -z "$SED_I" ]]; then
+      source ./submodules/bootstrap/env
+    fi
+
     if [[ "$KEY1" != "" ]]; then
-      sed -i "s|$KEY1|$VAL1|g" ${NEWFILE}
+      $SED_I "s|$KEY1|$VAL1|g" ${NEWFILE}
     fi
 
     if [[ "$KEY2" != "" ]]; then
-      sed -i "s|$KEY2|$VAL2|g" ${NEWFILE}
+      $SED_I "s|$KEY2|$VAL2|g" ${NEWFILE}
     fi
 
     if [[ "$KEY3" != "" ]]; then
-      sed -i "s|$KEY3|$VAL3|g" ${NEWFILE}
+      $SED_I "s|$KEY3|$VAL3|g" ${NEWFILE}
     fi
 
   else
