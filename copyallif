@@ -1,0 +1,11 @@
+#!/bin/bash
+[[ -z "$INFO_LEVEL" ]] && source ./submodules/bootstrap/logging
+
+IFMISSING=${IFMISSING-false}
+
+for F_TEMPLATE in $TEMPLATE/*
+do
+  BASENAME=${F_TEMPLATE##*/}
+  F_LOCATION=${LOCATION}/${BASENAME}
+  TEMPLATE=$F_TEMPLATE LOCATION=$F_LOCATION IFMISSING=$IFMISSING ./submodules/docker/copyif $@
+done

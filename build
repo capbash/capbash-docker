@@ -1,29 +1,20 @@
 #!/bin/bash
 [[ -z "$INFO_LEVEL" ]] && source ./submodules/bootstrap/logging
-set -euo pipefail ; IFS=$'\n\t'
 
 notify "  -- Building DOCKER container $NAME (${LAUNCHER_DIR}/Dockerfile)"
-if [[ "$LOGLEVEL" -le "$DEBUG_LEVEL" ]]; then
-  DOCKER_OUTPUT=${LAUNCHER_DIR}/docker_build.log
-else
-  DOCKER_OUTPUT=/dev/null
-fi
+DOCKER_OUTPUT=${LAUNCHER_DIR}/docker_build.log
 
-(cd ${LAUNCHER_DIR} && DOCKER_ERRORS=$(docker build -t $NAME . 2>&1 > $DOCKER_OUTPUT))
-debug_all $DOCKER_OUTPUT
+(cd ${LAUNCHER_DIR} && IGNORE=$(docker build -t $NAME . > $DOCKER_OUTPUT 2>&1))
+ERROR="Error building DOCKER container $NAME (${LAUNCHER_DIR}/Dockerfile), due to ..." ./submodules/bootstrap/failonerrors $? $DOCKER_OUTPUT
+[ $? -ne 0 ] && exit 1
 
-ERRORS=$DOCKER_ERRORS \
-  MSG="Error building DOCKER container $NAME (${LAUNCHER_DIR}/Dockerfile), due to ..." \
-  ./submodules/bootstrap/exitif
-
-if [[ ! -z "$VERSION" ]]; then
+if [[ ! -z "$VERSION" ]] && [[ "$VERSION" != "latest" ]]; then
   debug "Tagging $NAME $VERSION"
 
-  DOCKER_ID=$(NAME=$NAME /var/capbash/submodules/docker/image)
-  (cd ${LAUNCHER_DIR} &&  DOCKER_ERRORS=$(docker tag $DOCKER_ID $NAME:$VERSION 2>&1 > $DOCKER_OUTPUT))
-  debug_all $DOCKER_OUTPUT
+  DOCKER_ID=$(NAME=$NAME ./submodules/docker/image)
+  debug "  -- Found $NAME image $DOCKER_ID"
+  (cd ${LAUNCHER_DIR} &&  IGNORE=$(docker tag $DOCKER_ID $NAME:$VERSION > $DOCKER_OUTPUT 2>&1))
+  ERROR="Error tagging DOCKER container $NAME ($VERSION), due to ..." ./submodules/bootstrap/failonerrors $? $DOCKER_OUTPUT
+  [ $? -ne 0 ] && exit 1
+  debug "  -- Successgully tagged $NAME $VERSION"
 fi
-
-ERRORS=$DOCKER_ERRORS \
-  MSG="Error tagging DOCKER container $NAME ${VERSION}, due to ..." \
-  ./submodules/bootstrap/exitif

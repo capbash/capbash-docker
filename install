@@ -38,9 +38,9 @@ if [[ "$OS" == "ubuntu" ]]; then
     notify "  -- Configuring /etc/default/ufw"
     mkdir -p /etc/default
     sed -i 's|DEFAULT_FORWARD_POLICY="DROP"|DEFAULT_FORWARD_POLICY="ACCEPT"|g' /etc/default/ufw
-    ufw reload 2>&1 > $DOCKER_OUTPUT
+    ufw reload > $DOCKER_OUTPUT 2>&1
     debug_all $DOCKER_OUTPUT
-    ufw allow 4243/tcp 2>&1 > $DOCKER_OUTPUT
+    ufw allow 4243/tcp > $DOCKER_OUTPUT 2>&1
     debug_all $DOCKER_OUTPUT
     touch "${DOCKER_LAUNCHER_DIR}/ufw.done"
   else
