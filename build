@@ -3,6 +3,7 @@
 
 notify "  -- Building DOCKER container $NAME (${LAUNCHER_DIR}/Dockerfile)"
 DOCKER_OUTPUT=${LAUNCHER_DIR}/docker_build.log
+debug "  -- Run 'tail -f ${DOCKER_OUTPUT}' to watch build logs live"
 
 (cd ${LAUNCHER_DIR} && IGNORE=$(docker build -t $NAME . > $DOCKER_OUTPUT 2>&1))
 ERROR="Error building DOCKER container $NAME (${LAUNCHER_DIR}/Dockerfile), due to ..." ./submodules/bootstrap/failonerrors $? $DOCKER_OUTPUT
