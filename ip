@@ -1,10 +1,10 @@
 #!/bin/bash
 printf "%b" "#!/bin/bash
-CONTAINER_ID=\`${DIR}/running\`
-if [[ \"\$CONTAINER_ID\" == '' ]]; then
+ID=\${ID-\`${DIR}/running\`}
+if [[ \"\$ID\" == '' ]]; then
   echo ''
 else
-  IP=\$(docker inspect \$CONTAINER_ID | python -c 'import json,sys;obj=json.load(sys.stdin);print obj[0][\"NetworkSettings\"][\"IPAddress\"]')
+  IP=\$(docker inspect \$ID | python -c 'import json,sys;obj=json.load(sys.stdin);print obj[0][\"NetworkSettings\"][\"IPAddress\"]')
   echo \"\$IP\"
 fi
 " > $DIR/ip
