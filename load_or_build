@@ -5,6 +5,7 @@ DOCKER_ASSETS_DIR=${DOCKER_ASSETS_DIR-./assets/dockerimages}
 DOCKER_IMAGE_FILE=$DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar
 IMAGE_ID=$(NAME=${NAME} VERSION=${VERSION} ./submodules/docker/image)
 FORCE_BUILD=${FORCE_BUILD-true}
+OWNER=${OWNER-$USER}
 
 if [[ "$IMAGE_ID" != "" ]] && [[ "$FORCE_BUILD" != "true" ]]; then
   debug "  -- Image ${NAME} ${VERSION} already loaded, add FORCE_BUILD=true to force a build"
@@ -19,5 +20,5 @@ else
   fi
   LAUNCHER_DIR=$LAUNCHER_DIR NAME=clj VERSION=${CLJ_VERSION} ./submodules/docker/build
   [ $? -ne 0 ] && exit 1
-  LAUNCHER_DIR=$LAUNCHER_DIR NAME=clj VERSION=${CLJ_VERSION} ./submodules/docker/save
+  OWNER=$OWNER LAUNCHER_DIR=$LAUNCHER_DIR NAME=clj VERSION=${CLJ_VERSION} ./submodules/docker/save
 fi
