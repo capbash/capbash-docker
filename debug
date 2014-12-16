@@ -7,7 +7,7 @@ else
 fi
 
 printf "%b" "#!/bin/bash
-source /usr/local/bin/logging
+source logging
 CONTAINER_NAME=\${1}
 if [[ \"\$CONTAINER_NAME\" == \"\" ]]; then
   notify \"Starting debug mode for ${FRIENDLY_NAME}, randomly named\"

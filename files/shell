@@ -1,6 +1,6 @@
 #!/bin/bash
 . /usr/local/bin/capbashenv
-source /usr/local/bin/logging
+source logging
 
 if [[ "$OS" == "mac" ]]; then
   if [[ "$LOGLEVEL" -le "$DEBUG_LEVEL" ]]; then

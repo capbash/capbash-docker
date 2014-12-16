@@ -1,6 +1,6 @@
 #!/bin/bash
 printf "%b" "#!/bin/bash
-source /usr/local/bin/logging
+source logging
 
 if [[ -e ${DIR}/running ]]; then
   ID=\${ID-\`${DIR}/running\`}

@@ -1,6 +1,6 @@
 #!/bin/bash
 printf "%b" "#!/bin/bash
-source /usr/local/bin/logging
+source logging
 CONTAINER_ID=\`${DIR}/running\`
 if [[ \"\$CONTAINER_ID\" == \"\" ]]; then
   notify 'Starting ${NAME} container...'
