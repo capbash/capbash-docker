@@ -1,6 +1,8 @@
 #!/bin/bash
 [[ -z "$INFO_LEVEL" ]] && source ./submodules/bootstrap/logging
 
+COPY_OUTPUT=/tmp/copy.log
+
 IFMISSING=${IFMISSING-false}
 
 # TODO: turn into a list
@@ -50,10 +52,11 @@ else
     echo "$CODE" > $NEWFILE
   fi
 
-
   if [[ ! -e $LOCATION ]]; then
-    notify "  -- $LOCATION created"
-    cp ${NEWFILE} ${LOCATION}
+    SCRIPT_OUTPUT=$(cp ${NEWFILE} ${LOCATION} > $COPY_OUTPUT 2>&1)
+    ERROR="Unable to copy ${NEWFILE} to ${LOCATION} due to ..." ./submodules/bootstrap/failonerrors $? $COPY_OUTPUT
+    [ $? -ne 0 ] && exit 1
+    debug "  -- $LOCATION created"
   else
     DIFF=$(diff $NEWFILE $LOCATION) 2> /dev/null
 

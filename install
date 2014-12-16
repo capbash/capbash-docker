@@ -7,6 +7,7 @@ set -euo pipefail ; IFS=$'\n\t'
 #-----------
 
 export DOCKER_LAUNCHER_DIR=${DOCKER_LAUNCHER_DIR-/var/local/docker}
+LAUNCHER_OWNER=${LAUNCHER_OWNER-$USER}
 DOCKER_SUPPORT_LXC=${DOCKER_SUPPORT_LXC-false}
 DOCKER_FORCE_INSTALL=${DOCKER_FORCE_INSTALL-false}
 
@@ -30,8 +31,7 @@ if [[ "$DOCKER_FORCE_INSTALL" == true ]]; then
   rm -rf ${DOCKER_LAUNCHER_DIR}
 fi
 
-./submodules/bootstrap/mkdir DOCKER_LAUNCHER_DIR
-
+OWNER=$LAUNCHER_OWNER ./submodules/bootstrap/mkdir DOCKER_LAUNCHER_DIR
 
 if [[ "$OS" == "ubuntu" ]]; then
   if [[ ! -e "${DOCKER_LAUNCHER_DIR}/ufw.done" ]]; then
