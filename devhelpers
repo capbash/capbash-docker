@@ -1,0 +1,6 @@
+#!/bin/bash
+DEBUG=${DEBUG-ignore}
+IMAGE_NAME=${IMAGE_NAME-$NAME}
+
+NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR ./submodules/docker/ip
+NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR DOCKER=$DEBUG ./submodules/docker/debug

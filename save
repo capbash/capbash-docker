@@ -1,0 +1,4 @@
+#!/bin/bash
+
+IMAGE=$1
+docker save $IMAGE > ./assets/dockerimages/$IMAGE.tar

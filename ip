@@ -1,12 +1,23 @@
 #!/bin/bash
 printf "%b" "#!/bin/bash
-ID=\${ID-\`${DIR}/running\`}
-if [[ \"\$ID\" == '' ]]; then
-  echo ''
+source /usr/local/bin/logging
+
+if [[ -e ${DIR}/running ]]; then
+  ID=\${ID-\`${DIR}/running\`}
 else
-  IP=\$(docker inspect \$ID | python -c 'import json,sys;obj=json.load(sys.stdin);print obj[0][\"NetworkSettings\"][\"IPAddress\"]')
-  echo \"\$IP\"
+  ID=\${ID-}
 fi
+
+if [[ \"\$ID\" == '' ]]; then
+  debug \"Container not officially running, going to try and grep it out\"
+  ID=$(docker ps | grep $IMAGE_NAME | awk '{ print $1 }')
+  if [[ \"\$ID\" == '' ]]; then
+    echo ''
+    exit 0
+  fi
+fi
+IP=\$(docker inspect \$ID | python -c 'import json,sys;obj=json.load(sys.stdin);print obj[0][\"NetworkSettings\"][\"IPAddress\"]')
+echo \"\$IP\"
 " > $DIR/ip
 
 chmod 755 $DIR/ip
