@@ -1,0 +1,19 @@
+#!/bin/bash
+source ./submodules/bootstrap/logging
+
+DOCKER_ASSETS_DIR=${DOCKER_ASSETS_DIR-./assets/dockerimages}
+DOCKER_IMAGE_FILE=$DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar
+IMAGE_ID=$(NAME=${NAME} VERSION=${VERSION} ./submodules/docker/image)
+FORCE_BUILD=${FORCE_BUILD-false}
+
+if [[ "$IMAGE_ID" != "" ]] && [[ "$FORCE_BUILD" != "true" ]]; then
+  debug "  -- Image ${NAME} ${VERSION} already loaded, add FORCE_BUILD=true to force a build"
+elif [[ -e $DOCKER_IMAGE_FILE ]]; then
+  debug "  -- Attempting to load $DOCKER_IMAGE_FILE, remove this file if you want to build from scratch"
+  LAUNCHER_DIR=$LAUNCHER_DIR NAME=${NAME} VERSION=${VERSION} ./submodules/docker/load
+else
+  debug "  -- No $DOCKER_IMAGE_FILE available, building from scratch"
+  LAUNCHER_DIR=$LAUNCHER_DIR NAME=clj VERSION=${CLJ_VERSION} ./submodules/docker/build
+  [ $? -ne 0 ] && exit 1
+  LAUNCHER_DIR=$LAUNCHER_DIR NAME=clj VERSION=${CLJ_VERSION} ./submodules/docker/save
+fi

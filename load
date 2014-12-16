@@ -1,0 +1,15 @@
+#!/bin/bash
+source ./submodules/bootstrap/logging
+
+export DOCKER_ASSETS_DIR=${DOCKER_ASSETS_DIR-./assets/dockerimages}
+IMAGE_NAME=${IMAGE_NAME-$NAME:$VERSION}
+DOCKER_IMAGE_FILE=$DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar
+LOAD_OUTPUT=${LAUNCHER_DIR}/docker_save.log
+
+./submodules/bootstrap/mkdir DOCKER_ASSETS_DIR
+[ $? -ne 0 ] && exit 1
+notify "  -- Loading $IMAGE_NAME from $DOCKER_IMAGE_FILE"
+SCRIPT_OUTPUT=$(docker load -i $DOCKER_IMAGE_FILE > $LOAD_OUTPUT 2>&1)
+ERROR="Unable to load $IMAGE_NAME from $DOCKER_IMAGE_FILE due to ..." ./submodules/bootstrap/failonerrors $? $LOAD_OUTPUT
+[ $? -ne 0 ] && exit 1
+debug "  -- DONE, Loading $IMAGE_NAME to $DOCKER_IMAGE_FILE"

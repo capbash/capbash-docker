@@ -1,2 +1,3 @@
 #!/bin/bash
-docker images $NAME | grep latest | awk '{ print $3 }'
+VERSION=${VERSION-latest}
+docker images $NAME | grep $VERSION | awk '{ print $3 }'
