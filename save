@@ -7,11 +7,20 @@ DOCKER_IMAGE_FILE=$DOCKER_ASSETS_DIR/${NAME}.${CLJ_VERSION}.tar
 SAVE_OUTPUT=${LAUNCHER_DIR}/docker_save.log
 OWNER=${OWNER-$USER}
 
-./submodules/bootstrap/mkdir DOCKER_ASSETS_DIR
+OWNER=$OWNER ./submodules/bootstrap/mkdir DOCKER_ASSETS_DIR
 [ $? -ne 0 ] && exit 1
-notify "  -- Saving $IMAGE_NAME to $DOCKER_IMAGE_FILE"
+notify "  -- Saving $IMAGE_NAME to $DOCKER_IMAGE_FILE.gz"
+
+debug "  -- Creating $DOCKER_IMAGE_FILE"
 SCRIPT_OUTPUT=$(docker save -o $DOCKER_IMAGE_FILE $IMAGE_NAME > $SAVE_OUTPUT 2>&1)
 ERROR="Unable to save $IMAGE_NAME to $DOCKER_IMAGE_FILE due to ..." ./submodules/bootstrap/failonerrors $? $SAVE_OUTPUT
 [ $? -ne 0 ] && exit 1
-OWNER=$OWNER ./submodules/bootstrap/touch $DOCKER_IMAGE_FILE
-debug "  -- DONE, Saving $IMAGE_NAME to $DOCKER_IMAGE_FILE"
+
+debug "  -- Compressing to $DOCKER_IMAGE_FILE.gz"
+rm -f $DOCKER_IMAGE_FILE.gz
+SCRIPT_OUTPUT=$(gzip $DOCKER_IMAGE_FILE > $SAVE_OUTPUT 2>&1)
+ERROR="Unable to gzip $DOCKER_IMAGE_FILE due to ..." ./submodules/bootstrap/failonerrors $? $SAVE_OUTPUT
+[ $? -ne 0 ] && exit 1
+
+OWNER=$OWNER ./submodules/bootstrap/touch $DOCKER_IMAGE_FILE.gz
+debug "  -- DONE, Saving $IMAGE_NAME to $DOCKER_IMAGE_FILE.gz"
