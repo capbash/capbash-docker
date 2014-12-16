@@ -5,6 +5,7 @@ DOCKER_ASSETS_DIR=${DOCKER_ASSETS_DIR-./assets/dockerimages}
 DOCKER_IMAGE_FILE=$DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar
 IMAGE_ID=$(NAME=${NAME} VERSION=${VERSION} ./submodules/docker/image)
 FORCE_BUILD=${FORCE_BUILD-true}
+SAVE_BUILD=${SAVE_BUILD-true}
 OWNER=${OWNER-$USER}
 
 if [[ "$IMAGE_ID" != "" ]] && [[ "$FORCE_BUILD" != "true" ]]; then
@@ -18,7 +19,12 @@ else
   else
     debug "  -- No $DOCKER_IMAGE_FILE available, building from scratch"
   fi
-  LAUNCHER_DIR=$LAUNCHER_DIR NAME=clj VERSION=${CLJ_VERSION} ./submodules/docker/build
+  LAUNCHER_DIR=$LAUNCHER_DIR NAME=$NAME VERSION=$VERSION ./submodules/docker/build
   [ $? -ne 0 ] && exit 1
-  OWNER=$OWNER LAUNCHER_DIR=$LAUNCHER_DIR NAME=clj VERSION=${CLJ_VERSION} ./submodules/docker/save
+
+  if [[ "$SAVE_BUILD" == "true" ]]; then
+    OWNER=$OWNER LAUNCHER_DIR=$LAUNCHER_DIR NAME=$NAME VERSION=$VERSION ./submodules/docker/save
+  else
+    debug "  -- Not saving Docker image NAME=$NAME VERSION=$VERSION, set SAVE_BUILD=true to enable saving it"
+  fi
 fi
