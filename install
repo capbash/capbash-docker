@@ -51,20 +51,27 @@ fi
 if [[ "$DOCKER_FORCE_INSTALL" == true ]] || [[ "`which docker 2> /dev/null`" == "" ]]; then
   notify "  -- install docker.io"
   if [[ "$OS" == "ubuntu" ]]; then
-    apt-get update
-    apt-get install -y docker.io
-    ln -sf /usr/bin/docker.io /usr/local/bin/docker
-    sed -i '$acomplete -F _docker docker' /etc/bash_completion.d/docker.io
+    if [[ "$USER" == root ]]; then
+      SUDO=""
+    else
+      debug "  -- Running install using 'sudo' a password may be required"
+      SUDO=sudo
+    fi
+    
+    $SUDO apt-get update
+    $SUDO apt-get install -y docker.io
+    $SUDO ln -sf /usr/bin/docker.io /usr/local/bin/docker
+    $SUDO sed -i '$acomplete -F _docker docker' /etc/bash_completion.d/docker.io
 
     [ -e /usr/lib/apt/methods/https ] || {
-      apt-get update
-      apt-get install -y apt-transport-https
+      $SUDO apt-get update
+      $SUDO apt-get install -y apt-transport-https
     }
 
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
+    $SUDO apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
 
-    apt-get install -y curl
-    curl -s https://get.docker.io/ubuntu/ | sh
+    $SUDO apt-get install -y curl
+    $SUDO curl -s https://get.docker.io/ubuntu/ | sh
   elif [[ "$OS" == "mac" ]]; then
     error "Please install boot2docker (https://docs.docker.com/installation/mac/)"
     exit 1
