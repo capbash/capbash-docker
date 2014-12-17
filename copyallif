@@ -3,9 +3,14 @@
 
 IFMISSING=${IFMISSING-false}
 
+debug "  -- Copying all files in $TEMPLATE ..."
 for F_TEMPLATE in $TEMPLATE/*
 do
   BASENAME=${F_TEMPLATE##*/}
-  F_LOCATION=${LOCATION}/${BASENAME}
-  TEMPLATE=$F_TEMPLATE LOCATION=$F_LOCATION IFMISSING=$IFMISSING ./submodules/docker/copyif $@
+  if [[ "$BASENAME" != "*" ]]; then
+    F_LOCATION=${LOCATION}/${BASENAME}
+    debug "  -- Copying $F_TEMPLATE to $F_LOCATION"
+    TEMPLATE=$F_TEMPLATE LOCATION=$F_LOCATION IFMISSING=$IFMISSING ./submodules/docker/copyif $@
+  fi
 done
+debug "  -- DONE, Copying all files in $TEMPLATE"

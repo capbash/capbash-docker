@@ -23,7 +23,7 @@ else
   DOCKER_OUTPUT=/dev/null
 fi
 
-if [[ `groups | grep docker` == ""  ]]; then
+if [[ `groups | grep docker` == ""  ]] && [[ "$OS" == "ubuntu" ]]; then
   notify "Adding $USER to group docker. (will require logout/login)"
   $SUDO groupadd -f docker
   $SUDO gpasswd -a ${USER} docker
