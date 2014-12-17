@@ -23,6 +23,14 @@ else
   DOCKER_OUTPUT=/dev/null
 fi
 
+if [[ `groups | grep docker` == ""  ]]; then
+  notify "Adding $USER to group docker. (will require logout/login)"
+  $SUDO groupadd -f docker
+  $SUDO gpasswd -a ${USER} docker
+  error "Please logout and log back in and re-execute command."
+  exit 2
+fi
+
 if [[ "$DOCKER_FORCE_INSTALL" == true ]]; then
   notify "  -- forcing a install of docker if it already existed"
   if [[ -e ${DOCKER_LAUNCHER_DIR}/kill ]]; then
@@ -51,15 +59,11 @@ fi
 if [[ "$DOCKER_FORCE_INSTALL" == true ]] || [[ "`which docker 2> /dev/null`" == "" ]]; then
   notify "  -- install docker.io"
   if [[ "$OS" == "ubuntu" ]]; then
-    if [[ "$USER" == root ]]; then
-      SUDO=""
-    else
-      debug "  -- Running install using 'sudo' a password may be required"
-      SUDO=sudo
-    fi
-    
-    $SUDO apt-get update
-    $SUDO apt-get install -y docker.io
+
+    $SUDO apt-get update > $DOCKER_OUTPUT 2>&1
+    debug_all $DOCKER_OUTPUT
+    $SUDO apt-get install -y docker.io > $DOCKER_OUTPUT 2>&1
+    debug_all $DOCKER_OUTPUT
     $SUDO ln -sf /usr/bin/docker.io /usr/local/bin/docker
     $SUDO sed -i '$acomplete -F _docker docker' /etc/bash_completion.d/docker.io
 
@@ -71,7 +75,7 @@ if [[ "$DOCKER_FORCE_INSTALL" == true ]] || [[ "`which docker 2> /dev/null`" == 
     $SUDO apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
 
     $SUDO apt-get install -y curl
-    $SUDO curl -s https://get.docker.io/ubuntu/ | sh
+    curl -s https://get.docker.io/ubuntu/ | $SUDO sh
   elif [[ "$OS" == "mac" ]]; then
     error "Please install boot2docker (https://docs.docker.com/installation/mac/)"
     exit 1
@@ -96,9 +100,15 @@ TEMPLATE=./submodules/docker/files/kill LOCATION=$DOCKER_LAUNCHER_DIR/kill ./sub
 TEMPLATE=./submodules/docker/files/clean LOCATION=$DOCKER_LAUNCHER_DIR/clean ./submodules/docker/copyif
 TEMPLATE=./submodules/docker/files/shell LOCATION=$DOCKER_LAUNCHER_DIR/shell ./submodules/docker/copyif
 
-if [[ "$OS" != "mac" ]] && [[ "`service docker status | grep process`" == "" ]] && [[ "`service docker status | grep \"is running\"`" == "" ]]; then
+if [[ $OS == "ubuntu" ]]; then
+  DOCKER_SERVICE=docker.io
+else
+  DOCKER_SERVICE=docker
+fi
+
+if [[ "$OS" != "mac" ]] && [[ "`service $DOCKER_SERVICE status | grep process`" == "" ]] && [[ "`service $DOCKER_SERVICE status | grep \"is running\"`" == "" ]]; then
   notify "  -- restarting service"
-  service docker restart
+  $SUDO service $DOCKER_SERVICE restart
 fi
 
 if [[ "$OS" == "mac" ]]; then
