@@ -3,16 +3,22 @@ source ./submodules/bootstrap/logging
 
 export DOCKER_ASSETS_DIR=${DOCKER_ASSETS_DIR-./assets/dockerimages}
 IMAGE_NAME=${IMAGE_NAME-$NAME:$VERSION}
-DOCKER_IMAGE_FILE=$DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar
 LOAD_OUTPUT=${LAUNCHER_DIR}/docker_save.log
 
+if [[ "$DOCKER_ASSETS_DIR" == *"@"* ]]; then
+  notify "  -- Downloading $IMAGE_NAME image from $DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar.gz"
+  scp $DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar.gz /tmp
+  DOCKER_IMAGE_FILE=$DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar
+else
+  ./submodules/bootstrap/mkdir DOCKER_ASSETS_DIR
+  [ $? -ne 0 ] && exit 1
+  DOCKER_IMAGE_FILE=$DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar
+fi
 
 if [[ -e $DOCKER_IMAGE_FILE.gz ]]; then
   gunzip $DOCKER_IMAGE_FILE.gz
 fi
 
-./submodules/bootstrap/mkdir DOCKER_ASSETS_DIR
-[ $? -ne 0 ] && exit 1
 notify "  -- Loading $IMAGE_NAME from $DOCKER_IMAGE_FILE"
 SCRIPT_OUTPUT=$(docker load -i $DOCKER_IMAGE_FILE > $LOAD_OUTPUT 2>&1)
 ERROR="Unable to load $IMAGE_NAME from $DOCKER_IMAGE_FILE due to ..." ./submodules/bootstrap/failonerrors $? $LOAD_OUTPUT

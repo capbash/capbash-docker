@@ -10,9 +10,15 @@ OWNER=${OWNER-$USER}
 
 if [[ "$IMAGE_ID" != "" ]] && [[ "$FORCE_BUILD" != "true" ]]; then
   debug "  -- Image ${NAME} ${VERSION} already loaded, add FORCE_BUILD=true to force a build"
+
+elif [[ "$DOCKER_ASSETS_DIR" == *"@"* ]] && [[ "$FORCE_BUILD" != "true" ]]; then
+  debug "  -- Attempting to load remote $DOCKER_IMAGE_FILE"
+  LAUNCHER_DIR=$LAUNCHER_DIR NAME=${NAME} VERSION=${VERSION} ./submodules/docker/load
+
 elif [[ -e $DOCKER_IMAGE_FILE ]] && [[ "$FORCE_BUILD" != "true" ]]; then
   debug "  -- Attempting to load $DOCKER_IMAGE_FILE, remove this file if you want to build from scratch"
   LAUNCHER_DIR=$LAUNCHER_DIR NAME=${NAME} VERSION=${VERSION} ./submodules/docker/load
+
 else
   if [[ "$FORCE_BUILD" == "true" ]]; then
     debug "  -- Forcing a build from scratch, set FORCE_BUILD=false to reload an existing image"
