@@ -6,8 +6,10 @@ IMAGE_NAME=${IMAGE_NAME-$NAME:$VERSION}
 LOAD_OUTPUT=${LAUNCHER_DIR}/docker_save.log
 
 if [[ "$DOCKER_ASSETS_DIR" == *"@"* ]]; then
-  notify "  -- Downloading $IMAGE_NAME image from $DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar.gz"
-  scp $DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar.gz /tmp
+  notify "  -- Downloading $IMAGE_NAME image from $DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar.gz to /tmp/${NAME}.${VERSION}.tar.gz"
+  SCRIPT_OUTPUT=$(scp $DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar.gz /tmp > $LOAD_OUTPUT 2>&1)
+  ERROR="Unable to copy $IMAGE_NAME from $DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar.gz due to ..." ./submodules/bootstrap/failonerrors $? $LOAD_OUTPUT
+  [ $? -ne 0 ] && exit 1
   DOCKER_IMAGE_FILE=$DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar
 else
   ./submodules/bootstrap/mkdir DOCKER_ASSETS_DIR
