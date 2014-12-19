@@ -15,7 +15,7 @@ elif [[ "$DOCKER_ASSETS_DIR" == *"@"* ]]; then
   DOCKER_ASSETS_DIR=/tmp OWNER=$OWNER LAUNCHER_DIR=$LAUNCHER_DIR NAME=$NAME VERSION=$VERSION ./submodules/docker/save
   [ $? -ne 0 ] && exit 1
   notify "  -- Uploading /tmp/${NAME}.${VERSION}.tar.gz to $DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar"
-  scp /tmp/${NAME}.${VERSION}.tar.gz $DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar
+  scp /tmp/${NAME}.${VERSION}.tar.gz $DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar.gz
 
 else
   OWNER=$OWNER ./submodules/bootstrap/mkdir DOCKER_ASSETS_DIR

@@ -10,7 +10,7 @@ if [[ "$DOCKER_ASSETS_DIR" == *"@"* ]]; then
   SCRIPT_OUTPUT=$(scp $DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar.gz /tmp > $LOAD_OUTPUT 2>&1)
   ERROR="Unable to copy $IMAGE_NAME from $DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar.gz due to ..." ./submodules/bootstrap/failonerrors $? $LOAD_OUTPUT
   [ $? -ne 0 ] && exit 1
-  DOCKER_IMAGE_FILE=$DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar
+  DOCKER_IMAGE_FILE=/tmp/${NAME}.${VERSION}.tar
 else
   ./submodules/bootstrap/mkdir DOCKER_ASSETS_DIR
   [ $? -ne 0 ] && exit 1
