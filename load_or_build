@@ -11,7 +11,7 @@ OWNER=${OWNER-$USER}
 if [[ "$IMAGE_ID" != "" ]] && [[ "$FORCE_BUILD" != "true" ]]; then
   debug "  -- Image ${NAME} ${VERSION} already loaded, add FORCE_BUILD=true to force a build"
 
-elif [[ "$DOCKER_ASSETS_DIR" == *"@"* ]] && [[ "$FORCE_BUILD" != "true" ]]; then
+elif [[ "$DOCKER_ASSETS_SERVER" != "local" ]] && [[ "$FORCE_BUILD" != "true" ]]; then
   debug "  -- Attempting to load remote $DOCKER_IMAGE_FILE"
   LAUNCHER_DIR=$LAUNCHER_DIR NAME=${NAME} VERSION=${VERSION} ./submodules/docker/load
 

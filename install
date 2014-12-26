@@ -6,7 +6,8 @@ set -euo pipefail ; IFS=$'\n\t'
 # Configurations
 #-----------
 
-export DOCKER_LAUNCHER_DIR=${DOCKER_LAUNCHER_DIR-/var/local/docker}
+export LAUNCHER_DIR=${LAUNCHER_DIR-/var/local}
+export DOCKER_LAUNCHER_DIR=${DOCKER_LAUNCHER_DIR-$LAUNCHER_DIR/docker}
 LAUNCHER_OWNER=${LAUNCHER_OWNER-$USER}
 DOCKER_SUPPORT_LXC=${DOCKER_SUPPORT_LXC-false}
 DOCKER_FORCE_INSTALL=${DOCKER_FORCE_INSTALL-false}
@@ -39,7 +40,7 @@ if [[ "$DOCKER_FORCE_INSTALL" == true ]]; then
   rm -rf ${DOCKER_LAUNCHER_DIR}
 fi
 
-OWNER=$LAUNCHER_OWNER ./submodules/bootstrap/mkdir DOCKER_LAUNCHER_DIR
+OWNER=$LAUNCHER_OWNER ./submodules/bootstrap/mkdir LAUNCHER_DIR DOCKER_LAUNCHER_DIR $DOCKER_LAUNCHER_DIR/src
 
 if [[ "$OS" == "ubuntu" ]]; then
   if [[ -z "`which ufw 2> /dev/null`"  ]] && [[ ! -e "${DOCKER_LAUNCHER_DIR}/ufw.done" ]]; then
@@ -57,9 +58,8 @@ if [[ "$OS" == "ubuntu" ]]; then
 fi
 
 if [[ "$DOCKER_FORCE_INSTALL" == true ]] || [[ "`which docker 2> /dev/null`" == "" ]]; then
-  notify "  -- install docker.io"
+  notify "  -- install docker on $OS"
   if [[ "$OS" == "ubuntu" ]]; then
-
     $SUDO apt-get update > $DOCKER_OUTPUT 2>&1
     debug_all $DOCKER_OUTPUT
     $SUDO apt-get install -y docker.io > $DOCKER_OUTPUT 2>&1
@@ -80,10 +80,40 @@ if [[ "$DOCKER_FORCE_INSTALL" == true ]] || [[ "`which docker 2> /dev/null`" == 
     error "Please install boot2docker (https://docs.docker.com/installation/mac/)"
     exit 1
   else
-    # subscription-manager repos --enable=rhel-7-server-extras-rpms
-    yum install -y docker-io
-    yum update -y docker-io
+    SRC_NAME=epel-release-6-8.noarch.rpm SRC_DIR=$DOCKER_LAUNCHER_DIR/src \
+      NAME="EPEL (Extra Packages for Enterprise Linux) repository" \
+      REMOTE_URL=http://download.fedoraproject.org/pub/epel/6/x86_64 \
+      ./submodules/bootstrap/wget
+
+    (cd $DOCKER_LAUNCHER_DIR/src && $SUDO rpm -FUvh epel-release-6-8.noarch.rpm)
+
+    debug "  -- Cleaning YUM"
+    $SUDO yum clean all > $DOCKER_OUTPUT 2>&1
+    debug_all $DOCKER_OUTPUT
+
+    debug "  -- Installing docker-io.x86_64"
+    $SUDO yum install -y docker-io.x86_64 > $DOCKER_OUTPUT 2>&1
+    debug_all $DOCKER_OUTPUT
+
+    debug "  -- Updating docker-io.x86_64"
+    $SUDO yum update -y docker-io.x86_64 > $DOCKER_OUTPUT 2>&1
+    debug_all $DOCKER_OUTPUT
+
+    debug "  -- Enabling docker on startup"
+    $SUDO chkconfig docker on > $DOCKER_OUTPUT 2>&1
+    debug_all $DOCKER_OUTPUT
   fi
+
+  if [[ "`which docker 2> /dev/null`" == "" ]]; then
+    error "Unable to install docker"
+    exit 1
+  fi
+fi
+
+if [[ "$OS" == "redhat" ]] && [[ "$LAUNCHER_OWNER" != "$USER" ]]; then
+  debug "  -- Granting docker access to ${LAUNCHER_OWNER}"
+  $SUDO gpasswd -a ${LAUNCHER_OWNER} docker > $DOCKER_OUTPUT 2>&1
+  debug_all $DOCKER_OUTPUT
 fi
 
 notify "  -- Running `docker --version`"
@@ -108,7 +138,8 @@ fi
 
 if [[ "$OS" != "mac" ]] && [[ "`service $DOCKER_SERVICE status | grep process`" == "" ]] && [[ "`service $DOCKER_SERVICE status | grep \"is running\"`" == "" ]]; then
   notify "  -- restarting service"
-  $SUDO service $DOCKER_SERVICE restart
+  $SUDO service $DOCKER_SERVICE restart > $DOCKER_OUTPUT 2>&1
+  debug_all $DOCKER_OUTPUT
 fi
 
 if [[ "$OS" == "mac" ]]; then

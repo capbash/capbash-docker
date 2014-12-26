@@ -11,7 +11,7 @@ OWNER=${OWNER-$USER}
 if [[ -e $DOCKER_OUTPUT ]] && [[ ! -z `tail -n 4 $DOCKER_OUTPUT | grep "Using cache"` ]] && [[ -e $DOCKER_IMAGE_FILE.gz ]]; then
   notify "  -- No changes to $IMAGE_NAME, not overwriting $DOCKER_IMAGE_FILE.gz"
 
-elif [[ "$DOCKER_ASSETS_DIR" == *"@"* ]]; then
+elif [[ "$DOCKER_ASSETS_SERVER" != "local" ]]; then
   DOCKER_ASSETS_DIR=/tmp OWNER=$OWNER LAUNCHER_DIR=$LAUNCHER_DIR NAME=$NAME VERSION=$VERSION ./submodules/docker/save
   [ $? -ne 0 ] && exit 1
   notify "  -- Uploading /tmp/${NAME}.${VERSION}.tar.gz to $DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar"
