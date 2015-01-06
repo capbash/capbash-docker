@@ -1,3 +1,10 @@
 #!/bin/bash
+if [[ -e ./submodules/bootstrap/logging ]]; then
+  source ./submodules/bootstrap/logging
+else
+  source logging
+fi
+
 VERSION=${VERSION-latest}
+debug "  -- Looking up image $NAME $VERSION"
 docker images $NAME | grep $VERSION | awk '{ print $3 }'

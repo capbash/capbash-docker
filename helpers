@@ -1,7 +1,8 @@
 #!/bin/bash
 START=${START-ignore}
 DEBUG=${DEBUG-ignore}
-IMAGE_NAME=${IMAGE_NAME-$NAME}
+VERSION=${VERSION-latest}
+IMAGE_NAME=${IMAGE_NAME-$NAME:$VERSION}
 
 NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR ./submodules/docker/stop
 NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR ./submodules/docker/running
