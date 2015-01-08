@@ -10,8 +10,15 @@ do
   BASENAME=${F_TEMPLATE##*/}
   if [[ "$BASENAME" != "*" ]]; then
     F_LOCATION=${LOCATION}/${BASENAME}
-    debug "  -- Copying $F_TEMPLATE to $F_LOCATION"
-    OWNER=$OWNER TEMPLATE=$F_TEMPLATE LOCATION=$F_LOCATION IFMISSING=$IFMISSING ./submodules/docker/copyif $@
+    if [[ -d $F_TEMPLATE ]]; then
+      OWNER=$OWNER ./submodules/bootstrap/mkdir $F_LOCATION
+      OWNER=$OWNER TEMPLATE=$F_TEMPLATE LOCATION=$F_LOCATION IFMISSING=$IFMISSING ./submodules/docker/copyallif
+    else
+      debug "  -- Copying $F_TEMPLATE to $F_LOCATION"
+      OWNER=$OWNER TEMPLATE=$F_TEMPLATE LOCATION=$F_LOCATION IFMISSING=$IFMISSING ./submodules/docker/copyif $@
+    fi
+  else
+    debug "  -- Skipping $F_TEMPLATE"
   fi
 done
 debug "  -- DONE, Copying all files in $TEMPLATE"

@@ -23,3 +23,6 @@ ${DOCKER_CODE} \\
 " > $DIR/debug
 
 chmod 755 $DIR/debug
+
+OWNER=${OWNER-$USER}
+chown $OWNER $DIR/debug
