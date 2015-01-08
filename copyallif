@@ -2,6 +2,7 @@
 [[ -z "$INFO_LEVEL" ]] && source ./submodules/bootstrap/logging
 
 IFMISSING=${IFMISSING-false}
+OWNER=${OWNER-$USER}
 
 debug "  -- Copying all files in $TEMPLATE ..."
 for F_TEMPLATE in $TEMPLATE/*
@@ -10,7 +11,7 @@ do
   if [[ "$BASENAME" != "*" ]]; then
     F_LOCATION=${LOCATION}/${BASENAME}
     debug "  -- Copying $F_TEMPLATE to $F_LOCATION"
-    TEMPLATE=$F_TEMPLATE LOCATION=$F_LOCATION IFMISSING=$IFMISSING ./submodules/docker/copyif $@
+    OWNER=$OWNER TEMPLATE=$F_TEMPLATE LOCATION=$F_LOCATION IFMISSING=$IFMISSING ./submodules/docker/copyif $@
   fi
 done
 debug "  -- DONE, Copying all files in $TEMPLATE"

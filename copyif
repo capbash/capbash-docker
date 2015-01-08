@@ -1,6 +1,7 @@
 #!/bin/bash
 [[ -z "$INFO_LEVEL" ]] && source ./submodules/bootstrap/logging
 
+OWNER=${OWNER-$USER}
 COPY_OUTPUT=/tmp/copy.log
 
 IFMISSING=${IFMISSING-false}
@@ -15,11 +16,12 @@ VAL2=$4
 KEY3=$5
 VAL3=$6
 
+
 if [[ "$IFMISSING" == true ]]; then
 
   if [[ ! -e $LOCATION ]]; then
     notify "  -- $LOCATION created"
-    cp ${TEMPLATE} ${LOCATION}
+    OWNER=$OWNER ./submodules/bootstrap/cp ${TEMPLATE} ${LOCATION}
   else
     debug "  -- $LOCATION already exists, skipping"
   fi
@@ -53,16 +55,13 @@ else
   fi
 
   if [[ ! -e $LOCATION ]]; then
-    SCRIPT_OUTPUT=$(cp ${NEWFILE} ${LOCATION} > $COPY_OUTPUT 2>&1)
-    ERROR="Unable to copy ${NEWFILE} to ${LOCATION} due to ..." ./submodules/bootstrap/failonerrors $? $COPY_OUTPUT
-    [ $? -ne 0 ] && exit 1
-    debug "  -- $LOCATION created"
+    OWNER=$OWNER ./submodules/bootstrap/cp ${NEWFILE} ${LOCATION}
   else
     DIFF=$(diff $NEWFILE $LOCATION) 2> /dev/null
 
     if [[ "$DIFF" != "" ]]; then
       notify "  -- $LOCATION updated"
-      cp ${NEWFILE} ${LOCATION}
+      OWNER=$OWNER ./submodules/bootstrap/cp ${NEWFILE} ${LOCATION}
     else
       debug "  -- $LOCATION unchanged"
     fi
