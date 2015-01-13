@@ -10,7 +10,7 @@ ERROR="Error building DOCKER container $NAME (${LAUNCHER_DIR}/Dockerfile), due t
 [ $? -ne 0 ] && exit 1
 
 if [[ ! -z "$VERSION" ]] && [[ "$VERSION" != "latest" ]]; then
-  debug "Tagging $NAME $VERSION"
+  debug "  -- Tagging $NAME $VERSION"
   DOCKER_ID=`VERSION=latest NAME=$NAME ./submodules/docker/image`
 
   if [[ -z "$DOCKER_ID" ]]; then
