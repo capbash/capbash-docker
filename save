@@ -4,6 +4,7 @@ source ./submodules/bootstrap/logging
 export DOCKER_ASSETS_DIR=${DOCKER_ASSETS_DIR-./assets/dockerimages}
 IMAGE_NAME=${IMAGE_NAME-$NAME:$VERSION}
 DOCKER_IMAGE_FILE=$DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar
+LATEST_IMAGE_FILE=$DOCKER_ASSETS_DIR/${NAME}.latest.tar
 SAVE_OUTPUT=${LAUNCHER_DIR}/docker_save.log
 DOCKER_OUTPUT=${LAUNCHER_DIR}/docker_build.log
 OWNER=${OWNER-$USER}
@@ -34,5 +35,11 @@ else
   [ $? -ne 0 ] && exit 1
 
   OWNER=$OWNER ./submodules/bootstrap/touch $DOCKER_IMAGE_FILE.gz
+
+  if [[ "$DOCKER_IMAGE_FILE" != "$LATEST_IMAGE_FILE" ]]; then
+    debug " -- Saving latest image as well "
+    cp $DOCKER_IMAGE_FILE.gz $LATEST_IMAGE_FILE.gz
+  fi
+
   debug "  -- DONE, Saving $IMAGE_NAME to $DOCKER_IMAGE_FILE.gz"
 fi
