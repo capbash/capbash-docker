@@ -21,6 +21,5 @@ echo \"\$IP\"
 " > $DIR/ip
 
 chmod 755 $DIR/ip
-
 OWNER=${OWNER-$USER}
 chown $OWNER $DIR/ip

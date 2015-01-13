@@ -10,3 +10,5 @@ fi
 " > $DIR/restart
 
 chmod 755 $DIR/restart
+OWNER=${OWNER-$USER}
+chown $OWNER $DIR/restart

@@ -20,3 +20,5 @@ fi
 " > $DIR/start
 
 chmod 755 $DIR/start
+OWNER=${OWNER-$USER}
+chown $OWNER $DIR/start

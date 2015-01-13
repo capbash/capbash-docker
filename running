@@ -12,3 +12,5 @@ fi
 " > $DIR/running
 
 chmod 755 $DIR/running
+OWNER=${OWNER-$USER}
+chown $OWNER $DIR/running

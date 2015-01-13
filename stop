@@ -16,3 +16,5 @@ fi
 " > $DIR/stop
 
 chmod 755 $DIR/stop
+OWNER=${OWNER-$USER}
+chown $OWNER $DIR/stop

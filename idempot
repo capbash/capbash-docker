@@ -11,3 +11,5 @@ fi
 " > $DIR/idempot
 
 chmod 755 $DIR/idempot
+OWNER=${OWNER-$USER}
+chown $OWNER $DIR/idempot

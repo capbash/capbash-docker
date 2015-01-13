@@ -3,17 +3,18 @@ START=${START-ignore}
 DEBUG=${DEBUG-ignore}
 VERSION=${VERSION-latest}
 IMAGE_NAME=${IMAGE_NAME-$NAME:$VERSION}
+OWNER=${OWNER-$USER}
 
-NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR ./submodules/docker/stop
-NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR ./submodules/docker/running
-NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR ./submodules/docker/restart
-NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR ./submodules/docker/idempot
-NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR ./submodules/docker/ip
+OWNER=$OWNER NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR ./submodules/docker/stop
+OWNER=$OWNER NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR ./submodules/docker/running
+OWNER=$OWNER NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR ./submodules/docker/restart
+OWNER=$OWNER NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR ./submodules/docker/idempot
+OWNER=$OWNER NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR ./submodules/docker/ip
 
 if [[ "$START" != "ignore"  ]]; then
-  NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR DOCKER=$START ./submodules/docker/start
+  OWNER=$OWNER NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR DOCKER=$START ./submodules/docker/start
 fi
 
 if [[ "$DEBUG" != "ignore"  ]]; then
-  NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR DOCKER=$DEBUG ./submodules/docker/debug
+  OWNER=$OWNER NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR DOCKER=$DEBUG ./submodules/docker/debug
 fi
