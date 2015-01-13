@@ -17,12 +17,25 @@ else
 fi
 
 if [[ -e $DOCKER_IMAGE_FILE.gz ]]; then
-  gunzip $DOCKER_IMAGE_FILE.gz
+
+  if [[ -e $DOCKER_IMAGE_FILE ]]; then
+    debug "  -- Unzipped $DOCKER_IMAGE_FILE already exists, delete to force an unzip of $DOCKER_IMAGE_FILE.gz"
+  else
+    gunzip $DOCKER_IMAGE_FILE.gz
+  fi
+
 fi
 
 notify "  -- Loading $IMAGE_NAME from $DOCKER_IMAGE_FILE"
 SCRIPT_OUTPUT=$(docker load -i $DOCKER_IMAGE_FILE > $LOAD_OUTPUT 2>&1)
 ERROR="Unable to load $IMAGE_NAME from $DOCKER_IMAGE_FILE due to ..." ./submodules/bootstrap/failonerrors $? $LOAD_OUTPUT
 [ $? -ne 0 ] && exit 1
-gzip $DOCKER_IMAGE_FILE
+
+if [[ -e $DOCKER_IMAGE_FILE.gz ]]; then
+  debug "  -- $DOCKER_IMAGE_FILE already exists, deleting unzipped version"
+else
+  debug "  -- Zipping back up $DOCKER_IMAGE_FILE"
+  gzip $DOCKER_IMAGE_FILE
+fi
+rm -f $DOCKER_IMAGE_FILE
 debug "  -- DONE, Loading $IMAGE_NAME to $DOCKER_IMAGE_FILE"
