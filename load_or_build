@@ -8,7 +8,7 @@ FORCE_BUILD=${FORCE_BUILD-true}
 SAVE_BUILD=${SAVE_BUILD-true}
 OWNER=${OWNER-$USER}
 
-if [[ "$FORCE_BUILD" != "skip" ]]; then
+if [[ "$FORCE_BUILD" == "skip" ]]; then
   debug "  -- Skipping load/build of DOCKER ${NAME} ${VERSION} altogether, change FORCE_BUILD=true to force it to build (or false to look for an image)"
 
 elif [[ "$IMAGE_ID" != "" ]] && [[ "$FORCE_BUILD" != "true" ]]; then

@@ -1,6 +1,9 @@
 #!/bin/bash
 START=${START-ignore}
 DEBUG=${DEBUG-ignore}
+DEV=${DEV-ignore}
+DEV_LAUNCHER=${DEV_LAUNCHER-/bin/bash}
+
 VERSION=${VERSION-latest}
 IMAGE_NAME=${IMAGE_NAME-$NAME:$VERSION}
 OWNER=${OWNER-$USER}
@@ -17,4 +20,8 @@ fi
 
 if [[ "$DEBUG" != "ignore"  ]]; then
   OWNER=$OWNER NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR DOCKER=$DEBUG ./submodules/docker/debug
+fi
+
+if [[ "$DEV" != "ignore"  ]]; then
+  OWNER=$OWNER NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR DOCKER=$DEV SCRIPT_NAME=dev SCRIPT_LAUNCHER=$DEV_LAUNCHER ./submodules/docker/debug
 fi

@@ -1,5 +1,8 @@
 #!/bin/bash
 DOCKER_CODE=`resolvevars ${DEBUG}`
+SCRIPT_NAME=${SCRIPT_NAME-debug}
+SCRIPT_LAUNCHER=${SCRIPT_LAUNCHER-/bin/bash}
+
 if [[ "$NAME" == "$IMAGE_NAME" ]]; then
   FRIENDLY_NAME=$NAME
 else
@@ -18,10 +21,10 @@ else
   docker rm \$CONTAINER_NAME > /dev/null 2>&1
 fi
 ${DOCKER_CODE} \\
-  \$CONTAINER_NAME_CMD ${IMAGE_NAME} /bin/bash
+  \$CONTAINER_NAME_CMD ${IMAGE_NAME} $SCRIPT_LAUNCHER
 
-" > $DIR/debug
+" > $DIR/$SCRIPT_NAME
 
-chmod 755 $DIR/debug
+chmod 755 $DIR/$SCRIPT_NAME
 OWNER=${OWNER-$USER}
-chown $OWNER $DIR/debug
+chown $OWNER $DIR/$SCRIPT_NAME

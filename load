@@ -5,7 +5,7 @@ export DOCKER_ASSETS_DIR=${DOCKER_ASSETS_DIR-./assets/dockerimages}
 IMAGE_NAME=${IMAGE_NAME-$NAME:$VERSION}
 LOAD_OUTPUT=${LAUNCHER_DIR}/docker_save.log
 
-if [[ "$FORCE_BUILD" != "true" ]]; then
+if [[ "$FORCE_BUILD" == "skip" ]]; then
   debug "  -- Skipping load of DOCKER ${NAME} ${VERSION} altogether, change FORCE_BUILD=true to force it to build (or false to look for an image)"
   exit 0
 
