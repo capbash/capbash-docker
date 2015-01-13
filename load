@@ -5,7 +5,11 @@ export DOCKER_ASSETS_DIR=${DOCKER_ASSETS_DIR-./assets/dockerimages}
 IMAGE_NAME=${IMAGE_NAME-$NAME:$VERSION}
 LOAD_OUTPUT=${LAUNCHER_DIR}/docker_save.log
 
-if [[ "$DOCKER_ASSETS_SERVER" != "local" ]]; then
+if [[ "$FORCE_BUILD" != "true" ]]; then
+  debug "  -- Skipping load of DOCKER ${NAME} ${VERSION} altogether, change FORCE_BUILD=true to force it to build (or false to look for an image)"
+  exit 0
+
+elif [[ "$DOCKER_ASSETS_SERVER" != "local" ]]; then
   SERVER=$DOCKER_ASSETS_SERVER DIR=$DOCKER_ASSETS_DIR TO_DIR=/tmp \
     FILENAME=${NAME}.${VERSION}.tar.gz ./submodules/bootstrap/scp
   [ $? -ne 0 ] && exit 1
@@ -23,7 +27,6 @@ if [[ -e $DOCKER_IMAGE_FILE.gz ]]; then
   else
     gunzip $DOCKER_IMAGE_FILE.gz
   fi
-
 fi
 
 notify "  -- Loading $IMAGE_NAME from $DOCKER_IMAGE_FILE"

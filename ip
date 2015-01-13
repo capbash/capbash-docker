@@ -16,7 +16,13 @@ if [[ \"\$ID\" == '' ]]; then
     exit 0
   fi
 fi
-IP=\$(docker inspect \$ID | python -c 'import json,sys;obj=json.load(sys.stdin);print obj[0][\"NetworkSettings\"][\"IPAddress\"]')
+
+if [[ \"\`which boot2docker 2> /dev/null\`\" == \"\" ]]; then
+  IP=\$(docker inspect \$ID | python -c 'import json,sys;obj=json.load(sys.stdin);print obj[0][\"NetworkSettings\"][\"IPAddress\"]')
+else
+  IP=\$(boot2docker ip)
+fi
+
 echo \"\$IP\"
 " > $DIR/ip
 
