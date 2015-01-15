@@ -35,11 +35,5 @@ else
   [ $? -ne 0 ] && exit 1
 
   OWNER=$OWNER ./submodules/bootstrap/touch $DOCKER_IMAGE_FILE.gz
-
-  if [[ "$DOCKER_IMAGE_FILE" != "$LATEST_IMAGE_FILE" ]]; then
-    debug " -- Saving latest image as well "
-    cp $DOCKER_IMAGE_FILE.gz $LATEST_IMAGE_FILE.gz
-  fi
-
   debug "  -- DONE, Saving $IMAGE_NAME to $DOCKER_IMAGE_FILE.gz"
 fi
