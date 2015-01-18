@@ -1,5 +1,5 @@
 #!/bin/bash
-[[ -z "$INFO_LEVEL" ]] && source ./submodules/bootstrap/logging
+[[ -z "$INFO_LEVEL" ]] && source ./bits/bootstrap/logging
 
 #-----------
 # Configurations
@@ -39,7 +39,7 @@ if [[ "$DOCKER_FORCE_INSTALL" == true ]]; then
   rm -rf ${DOCKER_LAUNCHER_DIR}
 fi
 
-OWNER=$LAUNCHER_OWNER ./submodules/bootstrap/mkdir LAUNCHER_DIR DOCKER_LAUNCHER_DIR $DOCKER_LAUNCHER_DIR/src
+OWNER=$LAUNCHER_OWNER ./bits/bootstrap/mkdir LAUNCHER_DIR DOCKER_LAUNCHER_DIR $DOCKER_LAUNCHER_DIR/src
 
 if [[ "$OS" == "ubuntu" ]]; then
   if [[ -z "`which ufw 2> /dev/null`"  ]] && [[ ! -e "${DOCKER_LAUNCHER_DIR}/ufw.done" ]]; then
@@ -82,7 +82,7 @@ if [[ "$DOCKER_FORCE_INSTALL" == true ]] || [[ "`which docker 2> /dev/null`" == 
     SRC_NAME=epel-release-6-8.noarch.rpm SRC_DIR=$DOCKER_LAUNCHER_DIR/src \
       NAME="EPEL (Extra Packages for Enterprise Linux) repository" \
       REMOTE_URL=http://download.fedoraproject.org/pub/epel/6/x86_64 \
-      ./submodules/bootstrap/wget
+      ./bits/bootstrap/wget
 
     (cd $DOCKER_LAUNCHER_DIR/src && $SUDO rpm -FUvh epel-release-6-8.noarch.rpm)
 
@@ -120,14 +120,14 @@ notify "  -- Running `docker --version`"
 if [[ "$DOCKER_SUPPORT_LXC" == true ]]; then
   debug "  -- adding LXC support"
   apt-get install -y lxc
-  cp ./submodules/docker/files/conf /etc/default/docker
+  cp ./bits/docker/files/conf /etc/default/docker
 fi
 
 notify "  -- Installing helper scripts"
-TEMPLATE=./submodules/docker/files/purge LOCATION=$DOCKER_LAUNCHER_DIR/purge ./submodules/docker/copyif
-TEMPLATE=./submodules/docker/files/kill LOCATION=$DOCKER_LAUNCHER_DIR/kill ./submodules/docker/copyif
-TEMPLATE=./submodules/docker/files/clean LOCATION=$DOCKER_LAUNCHER_DIR/clean ./submodules/docker/copyif
-TEMPLATE=./submodules/docker/files/shell LOCATION=$DOCKER_LAUNCHER_DIR/shell ./submodules/docker/copyif
+TEMPLATE=./bits/docker/files/purge LOCATION=$DOCKER_LAUNCHER_DIR/purge ./bits/docker/copyif
+TEMPLATE=./bits/docker/files/kill LOCATION=$DOCKER_LAUNCHER_DIR/kill ./bits/docker/copyif
+TEMPLATE=./bits/docker/files/clean LOCATION=$DOCKER_LAUNCHER_DIR/clean ./bits/docker/copyif
+TEMPLATE=./bits/docker/files/shell LOCATION=$DOCKER_LAUNCHER_DIR/shell ./bits/docker/copyif
 
 if [[ $OS == "ubuntu" ]]; then
   DOCKER_SERVICE=docker.io

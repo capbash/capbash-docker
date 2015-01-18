@@ -1,5 +1,5 @@
 #!/bin/bash
-[[ -z "$INFO_LEVEL" ]] && source ./submodules/bootstrap/logging
+[[ -z "$INFO_LEVEL" ]] && source ./bits/bootstrap/logging
 
 OWNER=${OWNER-$USER}
 COPY_OUTPUT=/tmp/copy.log
@@ -21,7 +21,7 @@ if [[ "$IFMISSING" == true ]]; then
 
   if [[ ! -e $LOCATION ]]; then
     notify "  -- $LOCATION created"
-    OWNER=$OWNER ./submodules/bootstrap/cp ${TEMPLATE} ${LOCATION}
+    OWNER=$OWNER ./bits/bootstrap/cp ${TEMPLATE} ${LOCATION}
   else
     debug "  -- $LOCATION already exists, skipping"
   fi
@@ -34,7 +34,7 @@ else
     cp ${TEMPLATE} ${NEWFILE}
 
     if [[ -z "$SED_I" ]]; then
-      source ./submodules/bootstrap/env
+      source ./bits/bootstrap/env
     fi
 
     if [[ "$KEY1" != "" ]]; then
@@ -55,13 +55,13 @@ else
   fi
 
   if [[ ! -e $LOCATION ]]; then
-    OWNER=$OWNER ./submodules/bootstrap/cp ${NEWFILE} ${LOCATION}
+    OWNER=$OWNER ./bits/bootstrap/cp ${NEWFILE} ${LOCATION}
   else
     DIFF=$(diff $NEWFILE $LOCATION) 2> /dev/null
 
     if [[ "$DIFF" != "" ]]; then
       notify "  -- $LOCATION updated"
-      OWNER=$OWNER ./submodules/bootstrap/cp ${NEWFILE} ${LOCATION}
+      OWNER=$OWNER ./bits/bootstrap/cp ${NEWFILE} ${LOCATION}
     else
       debug "  -- $LOCATION unchanged"
     fi

@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euo pipefail ; IFS=$'\n\t'
 
-. ./submodules/bootstrap/env
-./submodules/bootstrap/install
-./submodules/docker/install
+. ./bits/bootstrap/env
+./bits/bootstrap/install
+./bits/docker/install

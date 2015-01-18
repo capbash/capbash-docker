@@ -1,4 +1,4 @@
 #!/bin/bash
 mkdir -p ./nodes
-cp ./submodules/docker/files/docker_node ./nodes/docker
+cp ./bits/docker/files/docker_node ./nodes/docker
 chmod 755 ./nodes/docker

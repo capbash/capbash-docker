@@ -1,5 +1,5 @@
 #!/bin/bash
-source ./submodules/bootstrap/logging
+source ./bits/bootstrap/logging
 
 export DOCKER_ASSETS_DIR=${DOCKER_ASSETS_DIR-./assets/dockerimages}
 IMAGE_NAME=${IMAGE_NAME-$NAME:$VERSION}
@@ -13,27 +13,27 @@ if [[ -e $DOCKER_OUTPUT ]] && [[ ! -z `tail -n 4 $DOCKER_OUTPUT | grep "Using ca
   notify "  -- No changes to $IMAGE_NAME, not overwriting $DOCKER_IMAGE_FILE.gz"
 
 elif [[ "$DOCKER_ASSETS_SERVER" != "local" ]]; then
-  DOCKER_ASSETS_DIR=/tmp OWNER=$OWNER LAUNCHER_DIR=$LAUNCHER_DIR NAME=$NAME VERSION=$VERSION ./submodules/docker/save
+  DOCKER_ASSETS_DIR=/tmp OWNER=$OWNER LAUNCHER_DIR=$LAUNCHER_DIR NAME=$NAME VERSION=$VERSION ./bits/docker/save
   [ $? -ne 0 ] && exit 1
   notify "  -- Uploading /tmp/${NAME}.${VERSION}.tar.gz to $DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar"
   scp /tmp/${NAME}.${VERSION}.tar.gz $DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar.gz
 
 else
-  OWNER=$OWNER ./submodules/bootstrap/mkdir DOCKER_ASSETS_DIR
+  OWNER=$OWNER ./bits/bootstrap/mkdir DOCKER_ASSETS_DIR
   [ $? -ne 0 ] && exit 1
   notify "  -- Saving $IMAGE_NAME to $DOCKER_IMAGE_FILE.gz"
 
   debug "  -- Creating $DOCKER_IMAGE_FILE"
   SCRIPT_OUTPUT=$(docker save -o $DOCKER_IMAGE_FILE $IMAGE_NAME > $SAVE_OUTPUT 2>&1)
-  ERROR="Unable to save $IMAGE_NAME to $DOCKER_IMAGE_FILE due to ..." ./submodules/bootstrap/failonerrors $? $SAVE_OUTPUT
+  ERROR="Unable to save $IMAGE_NAME to $DOCKER_IMAGE_FILE due to ..." ./bits/bootstrap/failonerrors $? $SAVE_OUTPUT
   [ $? -ne 0 ] && exit 1
 
   debug "  -- Compressing to $DOCKER_IMAGE_FILE.gz"
   rm -f $DOCKER_IMAGE_FILE.gz
   SCRIPT_OUTPUT=$(gzip $DOCKER_IMAGE_FILE > $SAVE_OUTPUT 2>&1)
-  ERROR="Unable to gzip $DOCKER_IMAGE_FILE due to ..." ./submodules/bootstrap/failonerrors $? $SAVE_OUTPUT
+  ERROR="Unable to gzip $DOCKER_IMAGE_FILE due to ..." ./bits/bootstrap/failonerrors $? $SAVE_OUTPUT
   [ $? -ne 0 ] && exit 1
 
-  OWNER=$OWNER ./submodules/bootstrap/touch $DOCKER_IMAGE_FILE.gz
+  OWNER=$OWNER ./bits/bootstrap/touch $DOCKER_IMAGE_FILE.gz
   debug "  -- DONE, Saving $IMAGE_NAME to $DOCKER_IMAGE_FILE.gz"
 fi

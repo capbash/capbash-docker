@@ -1,5 +1,5 @@
 #!/bin/bash
-source ./submodules/bootstrap/logging
+source ./bits/bootstrap/logging
 
 export DOCKER_ASSETS_DIR=${DOCKER_ASSETS_DIR-./assets/dockerimages}
 IMAGE_NAME=${IMAGE_NAME-$NAME:$VERSION}
@@ -11,11 +11,11 @@ if [[ "$FORCE_BUILD" == "skip" ]]; then
 
 elif [[ "$DOCKER_ASSETS_SERVER" != "local" ]]; then
   SERVER=$DOCKER_ASSETS_SERVER DIR=$DOCKER_ASSETS_DIR TO_DIR=/tmp \
-    FILENAME=${NAME}.${VERSION}.tar.gz ./submodules/bootstrap/scp
+    FILENAME=${NAME}.${VERSION}.tar.gz ./bits/bootstrap/scp
   [ $? -ne 0 ] && exit 1
   DOCKER_IMAGE_FILE=/tmp/${NAME}.${VERSION}.tar
 else
-  ./submodules/bootstrap/mkdir DOCKER_ASSETS_DIR
+  ./bits/bootstrap/mkdir DOCKER_ASSETS_DIR
   [ $? -ne 0 ] && exit 1
   DOCKER_IMAGE_FILE=$DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar
 fi
@@ -31,7 +31,7 @@ fi
 
 notify "  -- Loading $IMAGE_NAME from $DOCKER_IMAGE_FILE"
 SCRIPT_OUTPUT=$(docker load -i $DOCKER_IMAGE_FILE > $LOAD_OUTPUT 2>&1)
-ERROR="Unable to load $IMAGE_NAME from $DOCKER_IMAGE_FILE due to ..." ./submodules/bootstrap/failonerrors $? $LOAD_OUTPUT
+ERROR="Unable to load $IMAGE_NAME from $DOCKER_IMAGE_FILE due to ..." ./bits/bootstrap/failonerrors $? $LOAD_OUTPUT
 [ $? -ne 0 ] && exit 1
 
 if [[ -e $DOCKER_IMAGE_FILE.gz ]]; then

@@ -1,6 +1,6 @@
 #!/bin/bash
-if [[ -e ./submodules/bootstrap/logging ]]; then
-  source ./submodules/bootstrap/logging
+if [[ -e ./bits/bootstrap/logging ]]; then
+  source ./bits/bootstrap/logging
 else
   source logging
 fi

@@ -1,9 +1,9 @@
 #!/bin/bash
-source ./submodules/bootstrap/logging
+source ./bits/bootstrap/logging
 
 DOCKER_ASSETS_DIR=${DOCKER_ASSETS_DIR-./assets/dockerimages}
 DOCKER_IMAGE_FILE=$DOCKER_ASSETS_DIR/${NAME}.${VERSION}.tar
-IMAGE_ID=$(NAME=${NAME} VERSION=${VERSION} ./submodules/docker/image)
+IMAGE_ID=$(NAME=${NAME} VERSION=${VERSION} ./bits/docker/image)
 FORCE_BUILD=${FORCE_BUILD-true}
 SAVE_BUILD=${SAVE_BUILD-true}
 OWNER=${OWNER-$USER}
@@ -16,11 +16,11 @@ elif [[ "$IMAGE_ID" != "" ]] && [[ "$FORCE_BUILD" != "true" ]]; then
 
 elif [[ "$DOCKER_ASSETS_SERVER" != "local" ]] && [[ "$FORCE_BUILD" != "true" ]]; then
   debug "  -- Attempting to load remote $DOCKER_IMAGE_FILE"
-  LAUNCHER_DIR=$LAUNCHER_DIR NAME=${NAME} VERSION=${VERSION} ./submodules/docker/load
+  LAUNCHER_DIR=$LAUNCHER_DIR NAME=${NAME} VERSION=${VERSION} ./bits/docker/load
 
 elif [[ -e $DOCKER_IMAGE_FILE ]] && [[ "$FORCE_BUILD" != "true" ]]; then
   debug "  -- Attempting to load $DOCKER_IMAGE_FILE, remove this file if you want to build from scratch"
-  LAUNCHER_DIR=$LAUNCHER_DIR NAME=${NAME} VERSION=${VERSION} ./submodules/docker/load
+  LAUNCHER_DIR=$LAUNCHER_DIR NAME=${NAME} VERSION=${VERSION} ./bits/docker/load
 
 else
   if [[ "$FORCE_BUILD" == "true" ]]; then
@@ -28,11 +28,11 @@ else
   else
     debug "  -- No $DOCKER_IMAGE_FILE available, building from scratch"
   fi
-  LAUNCHER_DIR=$LAUNCHER_DIR NAME=$NAME VERSION=$VERSION ./submodules/docker/build
+  LAUNCHER_DIR=$LAUNCHER_DIR NAME=$NAME VERSION=$VERSION ./bits/docker/build
   [ $? -ne 0 ] && exit 1
 
   if [[ "$SAVE_BUILD" == "true" ]]; then
-    OWNER=$OWNER LAUNCHER_DIR=$LAUNCHER_DIR NAME=$NAME VERSION=$VERSION ./submodules/docker/save
+    OWNER=$OWNER LAUNCHER_DIR=$LAUNCHER_DIR NAME=$NAME VERSION=$VERSION ./bits/docker/save
   else
     debug "  -- Not saving Docker image NAME=$NAME VERSION=$VERSION, set SAVE_BUILD=true to enable saving it"
   fi

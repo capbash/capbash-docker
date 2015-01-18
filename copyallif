@@ -1,5 +1,5 @@
 #!/bin/bash
-[[ -z "$INFO_LEVEL" ]] && source ./submodules/bootstrap/logging
+[[ -z "$INFO_LEVEL" ]] && source ./bits/bootstrap/logging
 
 IFMISSING=${IFMISSING-false}
 OWNER=${OWNER-$USER}
@@ -11,11 +11,11 @@ do
   if [[ "$BASENAME" != "*" ]]; then
     F_LOCATION=${LOCATION}/${BASENAME}
     if [[ -d $F_TEMPLATE ]]; then
-      OWNER=$OWNER ./submodules/bootstrap/mkdir $F_LOCATION
-      OWNER=$OWNER TEMPLATE=$F_TEMPLATE LOCATION=$F_LOCATION IFMISSING=$IFMISSING ./submodules/docker/copyallif
+      OWNER=$OWNER ./bits/bootstrap/mkdir $F_LOCATION
+      OWNER=$OWNER TEMPLATE=$F_TEMPLATE LOCATION=$F_LOCATION IFMISSING=$IFMISSING ./bits/docker/copyallif
     else
       debug "  -- Copying $F_TEMPLATE to $F_LOCATION"
-      OWNER=$OWNER TEMPLATE=$F_TEMPLATE LOCATION=$F_LOCATION IFMISSING=$IFMISSING ./submodules/docker/copyif $@
+      OWNER=$OWNER TEMPLATE=$F_TEMPLATE LOCATION=$F_LOCATION IFMISSING=$IFMISSING ./bits/docker/copyif $@
     fi
   else
     debug "  -- Skipping $F_TEMPLATE"
