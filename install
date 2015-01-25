@@ -129,10 +129,10 @@ TEMPLATE=./bits/docker/files/kill LOCATION=$DOCKER_LAUNCHER_DIR/kill ./bits/dock
 TEMPLATE=./bits/docker/files/clean LOCATION=$DOCKER_LAUNCHER_DIR/clean ./bits/docker/copyif
 TEMPLATE=./bits/docker/files/shell LOCATION=$DOCKER_LAUNCHER_DIR/shell ./bits/docker/copyif
 
-if [[ $OS == "ubuntu" ]]; then
-  DOCKER_SERVICE=docker.io
-else
+if [[ "`service docker.io status 2>/dev/null`" == "" ]]; then
   DOCKER_SERVICE=docker
+else
+  DOCKER_SERVICE=docker.io
 fi
 
 if [[ "$OS" != "mac" ]] && [[ "`$SUDO service $DOCKER_SERVICE status | grep process`" == "" ]] && [[ "`$SUDO service $DOCKER_SERVICE status | grep \"is running\"`" == "" ]]; then
