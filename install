@@ -127,6 +127,7 @@ notify "  -- Installing helper scripts"
 TEMPLATE=./bits/docker/files/purge LOCATION=$DOCKER_LAUNCHER_DIR/purge ./bits/docker/copyif
 TEMPLATE=./bits/docker/files/kill LOCATION=$DOCKER_LAUNCHER_DIR/kill ./bits/docker/copyif
 TEMPLATE=./bits/docker/files/clean LOCATION=$DOCKER_LAUNCHER_DIR/clean ./bits/docker/copyif
+TEMPLATE=./bits/docker/files/cleani LOCATION=$DOCKER_LAUNCHER_DIR/cleani ./bits/docker/copyif
 TEMPLATE=./bits/docker/files/shell LOCATION=$DOCKER_LAUNCHER_DIR/shell ./bits/docker/copyif
 
 if [[ $OS == "ubuntu" ]]; then
