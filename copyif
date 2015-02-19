@@ -16,6 +16,8 @@ VAL2=$4
 KEY3=$5
 VAL3=$6
 
+KEY4=$5
+VAL4=$6
 
 if [[ "$IFMISSING" == true ]]; then
 
@@ -38,15 +40,23 @@ else
     fi
 
     if [[ "$KEY1" != "" ]]; then
+      debug "    >> Applying filter $KEY1 to $VAL1"
       $SED_I "s|$KEY1|$VAL1|g" ${NEWFILE}
     fi
 
     if [[ "$KEY2" != "" ]]; then
+      debug "    >> Applying filter $KEY2 to $VAL2"
       $SED_I "s|$KEY2|$VAL2|g" ${NEWFILE}
     fi
 
     if [[ "$KEY3" != "" ]]; then
+      debug "    >> Applying filter $KEY3 to $VAL3"
       $SED_I "s|$KEY3|$VAL3|g" ${NEWFILE}
+    fi
+
+    if [[ "$KEY4" != "" ]]; then
+      debug "    >> Applying filter $KEY4 to $VAL4"
+      $SED_I "s|$KEY4|$VAL4|g" ${NEWFILE}
     fi
 
   else
