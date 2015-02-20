@@ -16,8 +16,8 @@ VAL2=$4
 KEY3=$5
 VAL3=$6
 
-KEY4=$5
-VAL4=$6
+KEY4=$7
+VAL4=$8
 
 if [[ "$IFMISSING" == true ]]; then
 
