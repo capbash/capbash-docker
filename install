@@ -81,13 +81,19 @@ if [[ "$DOCKER_FORCE_INSTALL" == true ]] || [[ "`which docker 2> /dev/null`" == 
   else
     SRC_NAME=epel-release-6-8.noarch.rpm SRC_DIR=$DOCKER_LAUNCHER_DIR/src \
       NAME="EPEL (Extra Packages for Enterprise Linux) repository" \
-      REMOTE_URL=http://download.fedoraproject.org/pub/epel/6/x86_64 \
+      REMOTE_URL=http://dl.fedoraproject.org/pub/epel/6/i386/ \
       ./bits/bootstrap/wget
 
-    (cd $DOCKER_LAUNCHER_DIR/src && $SUDO rpm -FUvh epel-release-6-8.noarch.rpm)
+    (cd $DOCKER_LAUNCHER_DIR/src && $SUDO rpm -ivh epel-release-6-8.noarch.rpm)
+    # (cd $DOCKER_LAUNCHER_DIR/src && $SUDO rpm -FUvh epel-release-6-8.noarch.rpm)
 
     debug "  -- Cleaning YUM"
     $SUDO yum clean all > $DOCKER_OUTPUT 2>&1
+    debug_all $DOCKER_OUTPUT
+
+    debug "  -- installing device-mapper-event-libs"
+    debug "     >> http://stackoverflow.com/questions/27216473/docker-1-3-fails-to-start-on-rhel6-5"
+    $SUDO yum install -y device-mapper-event-libs > $DOCKER_OUTPUT 2>&1
     debug_all $DOCKER_OUTPUT
 
     debug "  -- Installing docker-io.x86_64"
@@ -127,12 +133,14 @@ notify "  -- Installing helper scripts"
 TEMPLATE=./bits/docker/files/purge LOCATION=$DOCKER_LAUNCHER_DIR/purge ./bits/docker/copyif
 TEMPLATE=./bits/docker/files/kill LOCATION=$DOCKER_LAUNCHER_DIR/kill ./bits/docker/copyif
 TEMPLATE=./bits/docker/files/clean LOCATION=$DOCKER_LAUNCHER_DIR/clean ./bits/docker/copyif
+TEMPLATE=./bits/docker/files/cleani LOCATION=$DOCKER_LAUNCHER_DIR/cleani ./bits/docker/copyif
+TEMPLATE=./bits/docker/files/cleanx LOCATION=$DOCKER_LAUNCHER_DIR/cleanx ./bits/docker/copyif
 TEMPLATE=./bits/docker/files/shell LOCATION=$DOCKER_LAUNCHER_DIR/shell ./bits/docker/copyif
 
-if [[ "`service docker.io status 2>/dev/null`" == "" ]]; then
-  DOCKER_SERVICE=docker
-else
+if [[ $OS == "ubuntu" ]]; then
   DOCKER_SERVICE=docker.io
+else
+  DOCKER_SERVICE=docker
 fi
 
 if [[ "$OS" != "mac" ]] && [[ "`$SUDO service $DOCKER_SERVICE status | grep process`" == "" ]] && [[ "`$SUDO service $DOCKER_SERVICE status | grep \"is running\"`" == "" ]]; then

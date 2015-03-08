@@ -2,11 +2,12 @@
 [[ -z "$INFO_LEVEL" ]] && source ./bits/bootstrap/logging
 
 notify "  -- Building DOCKER container $NAME (${LAUNCHER_DIR}/Dockerfile)"
-DOCKER_OUTPUT=${LAUNCHER_DIR}/docker_build.log
-debug "  -- Run 'tail -f ${DOCKER_OUTPUT}' to watch build logs live"
+BUILD_OUTPUT=${LAUNCHER_DIR}/docker_build.log
+TAG_OUTPUT=${LAUNCHER_DIR}/docker_tag.log
+debug "  -- Run 'tail -f ${BUILD_OUTPUT}' to watch build logs live"
 
-(cd ${LAUNCHER_DIR} && IGNORE=$(docker build -t $NAME . > $DOCKER_OUTPUT 2>&1))
-ERROR="Error building DOCKER container $NAME (${LAUNCHER_DIR}/Dockerfile), due to ..." ./bits/bootstrap/failonerrors $? $DOCKER_OUTPUT
+(cd ${LAUNCHER_DIR} && IGNORE=$(docker build -t $NAME . > $BUILD_OUTPUT 2>&1))
+ERROR="Error building DOCKER container $NAME (${LAUNCHER_DIR}/Dockerfile), due to ..." ./bits/bootstrap/failonerrors $? $BUILD_OUTPUT
 [ $? -ne 0 ] && exit 1
 
 if [[ ! -z "$VERSION" ]] && [[ "$VERSION" != "latest" ]]; then
@@ -19,8 +20,8 @@ if [[ ! -z "$VERSION" ]] && [[ "$VERSION" != "latest" ]]; then
   fi
 
   debug "  -- Found $NAME image $DOCKER_ID ($VERSION)"
-  (cd ${LAUNCHER_DIR} &&  IGNORE=$(docker tag $DOCKER_ID $NAME:$VERSION > $DOCKER_OUTPUT 2>&1))
-  ERROR="Error tagging DOCKER container $NAME ($VERSION), due to ..." ./bits/bootstrap/failonerrors $? $DOCKER_OUTPUT
+  (cd ${LAUNCHER_DIR} &&  IGNORE=$(docker tag -f $DOCKER_ID $NAME:$VERSION > $TAG_OUTPUT 2>&1))
+  ERROR="Error tagging DOCKER container $NAME ($VERSION), due to ..." ./bits/bootstrap/failonerrors $? $TAG_OUTPUT
   [ $? -ne 0 ] && exit 1
   debug "  -- Successgully tagged $NAME $VERSION"
 fi
