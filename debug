@@ -1,5 +1,5 @@
 #!/bin/bash
-DOCKER_CODE=`resolvevars ${DEBUG}`
+DOCKER_CODE=`resolvevars ${DOCKER}`
 SCRIPT_NAME=${SCRIPT_NAME-debug}
 SCRIPT_LAUNCHER=${SCRIPT_LAUNCHER-/bin/bash}
 
