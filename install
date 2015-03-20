@@ -23,10 +23,10 @@ else
   DOCKER_OUTPUT=/dev/null
 fi
 
-if [[ `groups | grep docker` == ""  ]] && [[ "$OS" == "ubuntu" ]]; then
-  notify "  -- Adding $USER to group docker. (will require logout/login)"
+if [[ `groups $LAUNCHER_OWNER | grep docker` == ""  ]] && [[ "$OS" == "ubuntu" ]]; then
+  notify "  -- Adding $LAUNCHER_OWNER to group docker. (will require logout/login)"
   $SUDO groupadd -f docker
-  $SUDO gpasswd -a ${USER} docker
+  $SUDO gpasswd -a ${LAUNCHER_OWNER} docker > $DOCKER_OUTPUT 2>&1
   error "Please logout and log back in and re-execute command."
   exit 2
 fi
@@ -130,19 +130,9 @@ if [[ "$DOCKER_SUPPORT_LXC" == true ]]; then
 fi
 
 notify "  -- Installing helper scripts"
-TEMPLATE=./bits/docker/files/purge LOCATION=$DOCKER_LAUNCHER_DIR/purge ./bits/docker/copyif
-TEMPLATE=./bits/docker/files/kill LOCATION=$DOCKER_LAUNCHER_DIR/kill ./bits/docker/copyif
-TEMPLATE=./bits/docker/files/clean LOCATION=$DOCKER_LAUNCHER_DIR/clean ./bits/docker/copyif
-TEMPLATE=./bits/docker/files/cleani LOCATION=$DOCKER_LAUNCHER_DIR/cleani ./bits/docker/copyif
-TEMPLATE=./bits/docker/files/cleanx LOCATION=$DOCKER_LAUNCHER_DIR/cleanx ./bits/docker/copyif
-TEMPLATE=./bits/docker/files/shell LOCATION=$DOCKER_LAUNCHER_DIR/shell ./bits/docker/copyif
+TEMPLATE=./bits/docker/files/bin LOCATION=$DOCKER_LAUNCHER_DIR ./bits/docker/copyallif
 
-if [[ $OS == "ubuntu" ]]; then
-  DOCKER_SERVICE=docker.io
-else
-  DOCKER_SERVICE=docker
-fi
-
+DOCKER_SERVICE=docker
 if [[ "$OS" != "mac" ]] && [[ "`$SUDO service $DOCKER_SERVICE status | grep process`" == "" ]] && [[ "`$SUDO service $DOCKER_SERVICE status | grep \"is running\"`" == "" ]]; then
   notify "  -- restarting service"
   $SUDO service $DOCKER_SERVICE restart > $DOCKER_OUTPUT 2>&1

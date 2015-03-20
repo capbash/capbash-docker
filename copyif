@@ -19,6 +19,13 @@ VAL3=$6
 KEY4=$7
 VAL4=$8
 
+KEY5=$9
+VAL5=${10}
+
+KEY6=${11}
+VAL6=${12}
+
+
 if [[ "$IFMISSING" == true ]]; then
 
   if [[ ! -e $LOCATION ]]; then
@@ -57,6 +64,16 @@ else
     if [[ "$KEY4" != "" ]]; then
       debug "    >> Applying filter $KEY4 to $VAL4"
       $SED_I "s|$KEY4|$VAL4|g" ${NEWFILE}
+    fi
+
+    if [[ "$KEY5" != "" ]]; then
+      debug "    >> Applying filter $KEY5 to $VAL5"
+      $SED_I "s|$KEY5|$VAL5|g" ${NEWFILE}
+    fi
+
+    if [[ "$KEY6" != "" ]]; then
+      debug "    >> Applying filter $KEY6 to $VAL6"
+      $SED_I "s|$KEY6|$VAL6|g" ${NEWFILE}
     fi
 
   else
