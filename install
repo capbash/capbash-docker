@@ -146,4 +146,10 @@ if [[ "$OS" == "mac" ]]; then
   fi
 fi
 
+if [[ -e /var/lib/docker ]]; then
+  OWNER=$LAUNCHER_OWNER ./bits/bootstrap/chownif /var/lib/docker
+else
+  debug "  -- No /var/lib/docker found, so not chowning to $LAUNCHER_OWNER"
+fi
+
 notify "DONE, Installing DOCKER."
