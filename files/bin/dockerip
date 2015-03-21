@@ -1,0 +1,3 @@
+#!/bin/bash
+DOCKERIP=`ip route | grep docker0 | awk '{ print $9 }'`
+echo $DOCKERIP

@@ -1,0 +1,11 @@
+#!/bin/bash
+source logging
+
+CONTAINERS=$(docker ps -a -q)
+
+if [[ "$CONTAINERS" != "" ]]; then
+  notify "Removing all stopped containers"
+  docker rm $CONTAINERS > /dev/null 2>&1
+else
+  notify "No containers to purge"
+fi

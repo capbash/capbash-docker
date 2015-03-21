@@ -12,7 +12,7 @@ do
     F_LOCATION=${LOCATION}/${BASENAME}
     if [[ -d $F_TEMPLATE ]]; then
       OWNER=$OWNER ./bits/bootstrap/mkdir $F_LOCATION
-      OWNER=$OWNER TEMPLATE=$F_TEMPLATE LOCATION=$F_LOCATION IFMISSING=$IFMISSING ./bits/docker/copyallif
+      OWNER=$OWNER TEMPLATE=$F_TEMPLATE LOCATION=$F_LOCATION IFMISSING=$IFMISSING ./bits/docker/copyallif $@
     else
       debug "  -- Copying $F_TEMPLATE to $F_LOCATION"
       OWNER=$OWNER TEMPLATE=$F_TEMPLATE LOCATION=$F_LOCATION IFMISSING=$IFMISSING ./bits/docker/copyif $@

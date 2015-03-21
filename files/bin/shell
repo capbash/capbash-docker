@@ -1,0 +1,29 @@
+#!/bin/bash
+. capbashenv
+source logging
+
+if [[ "$OS" == "mac" ]]; then
+  if [[ "$LOGLEVEL" -le "$DEBUG_LEVEL" ]]; then
+    SHELL_OUTPUT=./shell.out
+  else
+    SHELL_OUTPUT=/dev/null
+  fi
+
+  debug "Starting boot2docker"
+  if [[ "`boot2docker status`" == "running" ]]; then
+    debug "Boot2Docker already started"
+  else
+    debug "Starting Boot2Docker"
+    SHELL_ERRORS=$(boot2docker start > $SHELL_OUTPUT 2>&1)
+    debug_all $SHELL_OUTPUT
+  fi
+  if [[ "$(ps -o comm= $PPID)" == "-bash" ]]; then
+    error "Please run this script as 'source' to ensure ENV variables get set"
+    exit 1
+  fi
+  $(boot2docker shellinit 2> $SHELL_OUTPUT)
+  debug_all $SHELL_OUTPUT
+  notify "Boot2Docker shell ready for docker"
+else
+  debug "Shell script not required on a non mac distribution"
+fi

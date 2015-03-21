@@ -1,0 +1,9 @@
+#!/bin/bash
+source logging
+
+notify "Removing all unused <none> images..."
+OUTPUT=$(docker images | awk '/<none>/ { print $3 }' | xargs docker rmi > /tmp/cleani.err 2>&1)
+echo $OUTPUT > /tmp/cleani.log
+debug /tmp/cleani.log
+debug /tmp/cleani.err
+debug "DONE, Removing all unused <none> images."

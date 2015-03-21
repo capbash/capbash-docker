@@ -1,5 +1,5 @@
 #!/bin/bash
-DOCKER_CODE=`resolvevars ${DEBUG}`
+DOCKER_CODE=`resolvevars ${DOCKER}`
 SCRIPT_NAME=${SCRIPT_NAME-debug}
 SCRIPT_LAUNCHER=${SCRIPT_LAUNCHER-/bin/bash}
 
@@ -13,10 +13,10 @@ printf "%b" "#!/bin/bash
 source logging
 CONTAINER_NAME=\${1}
 if [[ \"\$CONTAINER_NAME\" == \"\" ]]; then
-  notify \"Starting debug mode for ${FRIENDLY_NAME}, randomly named\"
+  notify \"Starting $SCRIPT_NAME mode for ${FRIENDLY_NAME}, randomly named\"
   CONTAINER_NAME_CMD=\"\"
 else
-  notify \"Starting debug mode for ${FRIENDLY_NAME} (\$CONTAINER_NAME)\"
+  notify \"Starting $SCRIPT_NAME mode for ${FRIENDLY_NAME} (\$CONTAINER_NAME)\"
   CONTAINER_NAME_CMD=\"--name \$CONTAINER_NAME\"
   docker rm \$CONTAINER_NAME > /dev/null 2>&1
 fi

@@ -1,0 +1,14 @@
+#!/bin/bash
+CONTAINERS=$(docker ps -a -q)
+
+if [[ "$CONTAINERS" != "" ]]; then
+  echo "Purging all running containers"
+  echo "  -- Stopping all containers"
+  docker stop $CONTAINERS > /dev/null 2>&1
+  echo "  -- Removing all containers"
+  docker rm $CONTAINERS > /dev/null 2>&1
+  echo "  -- Removing all container.pid files"
+  find / -name container.pid | xargs rm -f
+else
+  echo "No running containers to purge"
+fi
