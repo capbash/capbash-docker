@@ -26,18 +26,21 @@ KEY6=${11}
 VAL6=${12}
 
 
-if [[ "$IFMISSING" == true ]] || [[ ${file: -4} == ".png" ]] ; then
+if [[ "$IFMISSING" == true ]] ; then
 
   if [[ ! -e $LOCATION ]]; then
-    notify "  -- $LOCATION created"
+    notify "  -- $LOCATION created (as it was missing)"
     OWNER=$OWNER ./bits/bootstrap/cp ${TEMPLATE} ${LOCATION}
   else
     debug "  -- $LOCATION already exists, skipping"
   fi
 
-elif [[ "$KEY1" == "" ]] || [[ `file $TEMPLATE | grep text` == "" ]]; then
+elif [[ "$KEY1" == "" ]] ||  [[ `file $TEMPLATE | grep text` == "" ]]; then
 
-  if [[ `diff ${TEMPLATE} ${LOCATION}` == "" ]]; then
+  if [[ ! -e $LOCATION ]]; then
+    notify "  -- $LOCATION created (new file)"
+    OWNER=$OWNER ./bits/bootstrap/cp ${TEMPLATE} ${LOCATION}
+  elif [[ `diff ${TEMPLATE} ${LOCATION}` == "" ]]; then
     debug "  -- No diff between $TEMPLATE and $LOCATION, skipping"
   else
     notify "  -- Diff between $TEMPLATE and $LOCATION, updating"
