@@ -35,6 +35,15 @@ if [[ "$IFMISSING" == true ]] || [[ ${file: -4} == ".png" ]] ; then
     debug "  -- $LOCATION already exists, skipping"
   fi
 
+elif [[ "$KEY1" == "" ]] || [[ `file $TEMPLATE | grep text` == "" ]]; then
+
+  if [[ `diff ${TEMPLATE} ${LOCATION}` == "" ]]; then
+    debug "  -- No diff between $TEMPLATE and $LOCATION, skipping"
+  else
+    notify "  -- Diff between $TEMPLATE and $LOCATION, updating"
+    OWNER=$OWNER ./bits/bootstrap/cp ${TEMPLATE} ${LOCATION}
+  fi
+
 else
 
   if [[ "$CODE" == "" ]]; then
