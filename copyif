@@ -26,7 +26,7 @@ KEY6=${11}
 VAL6=${12}
 
 
-if [[ "$IFMISSING" == true ]]; then
+if [[ "$IFMISSING" == true ]] || [[ ${file: -4} == ".png" ]] ; then
 
   if [[ ! -e $LOCATION ]]; then
     notify "  -- $LOCATION created"
