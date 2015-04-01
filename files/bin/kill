@@ -4,7 +4,7 @@ echo "Deleting all containers and images"
 CONTAINERS=$(docker ps -a -q)
 if [[ "$CONTAINERS" != "" ]]; then
   echo "  -- Deleting containers"
-  docker rm --force $CONTAINERS
+  docker rm -v --force $CONTAINERS
 
   echo "  -- Removing all container.pid files"
   find / -name container.pid | xargs rm -f

@@ -18,7 +18,7 @@ if [[ \"\$CONTAINER_NAME\" == \"\" ]]; then
 else
   notify \"Starting $SCRIPT_NAME mode for ${FRIENDLY_NAME} (\$CONTAINER_NAME)\"
   CONTAINER_NAME_CMD=\"--name \$CONTAINER_NAME\"
-  docker rm \$CONTAINER_NAME > /dev/null 2>&1
+  docker rm -v \$CONTAINER_NAME > /dev/null 2>&1
 fi
 ${DOCKER_CODE} \\
   \$CONTAINER_NAME_CMD ${IMAGE_NAME} $SCRIPT_LAUNCHER
