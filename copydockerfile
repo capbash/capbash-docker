@@ -1,0 +1,15 @@
+#!/bin/bash
+[[ -z "$INFO_LEVEL" ]] && source ./bits/bootstrap/logging
+
+notify "  -- Preparing $BIT dockerfile for $LAUNCHER_DIR"
+OWNER=$LAUNCHER_OWNER \
+  TEMPLATE=./bits/$BIT/files/$BIT.dockerfile \
+  LOCATION=$LAUNCHER_DIR/Dockerfile \
+  ./bits/docker/copyif $@
+
+if [[ -e "./bits/$BIT/files/.dockerignore" ]]; then
+  TEMPLATE=./bits/$BIT/files/.dockerignore \
+    LOCATION=$LAUNCHER_DIR/.dockerignore \
+    ./bits/docker/copyif
+fi
+debug "  -- DONE, Preparing $BIT dockerfile for $LAUNCHER_DIR"

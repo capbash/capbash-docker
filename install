@@ -64,17 +64,21 @@ if [[ "$DOCKER_FORCE_INSTALL" == true ]] || [[ "`which docker 2> /dev/null`" == 
     $SUDO apt-get install -y docker.io > $DOCKER_OUTPUT 2>&1
     debug_all $DOCKER_OUTPUT
     $SUDO ln -sf /usr/bin/docker.io /usr/local/bin/docker
-    $SUDO sed -i '$acomplete -F _docker docker' /etc/bash_completion.d/docker.io
+    # $SUDO sed -i '$acomplete -F _docker docker' /etc/bash_completion.d/docker.io
 
     [ -e /usr/lib/apt/methods/https ] || {
-      $SUDO apt-get update
-      $SUDO apt-get install -y apt-transport-https
+      $SUDO apt-get update > $DOCKER_OUTPUT 2>&1
+      debug_all $DOCKER_OUTPUT
+      $SUDO apt-get install -y apt-transport-https > $DOCKER_OUTPUT 2>&1
+      debug_all $DOCKER_OUTPUT
     }
 
-    $SUDO apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
+    $SUDO apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9 > $DOCKER_OUTPUT 2>&1
+    debug_all $DOCKER_OUTPUT
 
-    $SUDO apt-get install -y curl
-    curl -s https://get.docker.io/ubuntu/ | $SUDO sh
+    $SUDO apt-get install -y curl > $DOCKER_OUTPUT 2>&1
+    debug_all $DOCKER_OUTPUT
+    SCRIPT_OUTPUT=$(curl -s https://get.docker.io/ubuntu/ | $SUDO sh > $DOCKER_OUTPUT 2>&1)
   elif [[ "$OS" == "mac" ]]; then
     error "Please install boot2docker (https://docs.docker.com/installation/mac/)"
     exit 1

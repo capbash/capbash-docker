@@ -11,7 +11,7 @@ source logging
 CONTAINER_ID=\`${DIR}/running\`
 if [[ \"\$CONTAINER_ID\" == \"\" ]]; then
   notify \"Starting ${FRIENDLY_NAME}\"
-  docker rm ${NAME} > /dev/null 2>&1
+  docker rm -v ${NAME} > /dev/null 2>&1
   ${DOCKER_CODE} 2> /dev/null > ${DIR}/container.pid
   notify \"DONE, Starting ${FRIENDLY_NAME}\"
 else

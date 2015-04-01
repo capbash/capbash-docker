@@ -1,12 +1,40 @@
 #!/bin/bash
-START=${START-ignore}
-DEBUG=${DEBUG-ignore}
-DEV=${DEV-ignore}
+source ./bits/bootstrap/logging
+
+#-----------
+# Configurations
+#-----------
+
+BIT=${BIT-ignore}
 DEV_LAUNCHER=${DEV_LAUNCHER-/bin/bash}
 
 VERSION=${VERSION-latest}
 IMAGE_NAME=${IMAGE_NAME-$NAME:$VERSION}
 OWNER=${OWNER-$USER}
+
+#-----------
+# Install Script
+#-----------
+
+notify "  -- Creating helper scripts"
+
+if [[ -e "./bits/$BIT/files/_start" ]]; then
+  START="./bits/$BIT/files/_start"
+else
+  START=${START-ignore}
+fi
+
+if [[ -e "./bits/$BIT/files/_debug" ]]; then
+  DEBUG="./bits/$BIT/files/_debug"
+else
+  DEBUG=${DEBUG-ignore}
+fi
+
+if [[ -e "./bits/$BIT/files/_dev" ]]; then
+  DEV="./bits/$BIT/files/_dev"
+else
+  DEV=${DEV-ignore}
+fi
 
 OWNER=$OWNER NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR ./bits/docker/stop
 OWNER=$OWNER NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR ./bits/docker/running
@@ -25,3 +53,5 @@ fi
 if [[ "$DEV" != "ignore"  ]]; then
   OWNER=$OWNER NAME=$NAME IMAGE_NAME=$IMAGE_NAME HOST=$HOST DIR=$DIR DOCKER=$DEV SCRIPT_NAME=dev SCRIPT_LAUNCHER=$DEV_LAUNCHER ./bits/docker/debug
 fi
+
+debug "  -- DONE, Creating helper scripts"

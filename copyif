@@ -25,7 +25,6 @@ VAL5=${10}
 KEY6=${11}
 VAL6=${12}
 
-
 if [[ "$IFMISSING" == true ]] ; then
 
   if [[ ! -e $LOCATION ]]; then
@@ -106,5 +105,4 @@ else
     fi
   fi
   rm -f $NEWFILE
-
 fi
