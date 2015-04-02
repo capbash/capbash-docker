@@ -8,8 +8,8 @@
 export LAUNCHER_DIR=${LAUNCHER_DIR-/var/local}
 export DOCKER_LAUNCHER_DIR=${DOCKER_LAUNCHER_DIR-$LAUNCHER_DIR/docker}
 LAUNCHER_OWNER=${LAUNCHER_OWNER-$USER}
-DOCKER_SUPPORT_LXC=${DOCKER_SUPPORT_LXC-false}
 DOCKER_FORCE_INSTALL=${DOCKER_FORCE_INSTALL-false}
+DOCKER_DEFAULT_SIZE=${DOCKER_DEFAULT_SIZE-10g}
 
 #-----------
 # Install Script
@@ -125,13 +125,8 @@ if [[ "$OS" == "redhat" ]] && [[ "$LAUNCHER_OWNER" != "$USER" ]]; then
   debug_all $DOCKER_OUTPUT
 fi
 
-notify "  -- Running `docker --version`"
-
-if [[ "$DOCKER_SUPPORT_LXC" == true ]]; then
-  debug "  -- adding LXC support"
-  apt-get install -y lxc
-  cp ./bits/docker/files/conf /etc/default/docker
-fi
+TEMPLATE=./bits/docker/files/conf LOCATION=/etc/default/docker \
+  ./bits/docker/copyif @DOCKER_DEFAULT_SIZE@ $DOCKER_DEFAULT_SIZE
 
 notify "  -- Installing helper scripts"
 TEMPLATE=./bits/docker/files/bin LOCATION=$DOCKER_LAUNCHER_DIR ./bits/docker/copyallif
