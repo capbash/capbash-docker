@@ -25,6 +25,28 @@ VAL5=${10}
 KEY6=${11}
 VAL6=${12}
 
+KEY7=${13}
+VAL7=${14}
+
+KEY8=${15}
+VAL8=${16}
+
+KEY9=${17}
+VAL9=${18}
+
+KEY10=${19}
+VAL10=${20}
+
+KEY11=${21}
+VAL11=${22}
+
+KEY12=${23}
+VAL12=${24}
+
+KEY13=${25}
+VAL13=${26}
+
+
 if [[ "$IFMISSING" == true ]] ; then
 
   if [[ ! -e $LOCATION ]]; then
@@ -85,6 +107,41 @@ else
     if [[ "$KEY6" != "" ]]; then
       debug "    >> Applying filter $KEY6 to $VAL6"
       $SED_I "s|$KEY6|$VAL6|g" ${NEWFILE}
+    fi
+
+    if [[ "$KEY7" != "" ]]; then
+      debug "    >> Applying filter $KEY7 to $VAL7"
+      $SED_I "s|$KEY7|$VAL7|g" ${NEWFILE}
+    fi
+
+    if [[ "$KEY8" != "" ]]; then
+      debug "    >> Applying filter $KEY8 to $VAL8"
+      $SED_I "s|$KEY8|$VAL8|g" ${NEWFILE}
+    fi
+
+    if [[ "$KEY9" != "" ]]; then
+      debug "    >> Applying filter $KEY9 to $VAL9"
+      $SED_I "s|$KEY9|$VAL9|g" ${NEWFILE}
+    fi
+
+    if [[ "$KEY10" != "" ]]; then
+      debug "    >> Applying filter $KEY10 to $VAL10"
+      $SED_I "s|$KEY10|$VAL10|g" ${NEWFILE}
+    fi
+
+    if [[ "$KEY11" != "" ]]; then
+      debug "    >> Applying filter $KEY11 to $VAL11"
+      $SED_I "s|$KEY11|$VAL11|g" ${NEWFILE}
+    fi
+
+    if [[ "$KEY12" != "" ]]; then
+      debug "    >> Applying filter $KEY12 to $VAL12"
+      $SED_I "s|$KEY12|$VAL12|g" ${NEWFILE}
+    fi
+
+    if [[ "$KEY13" != "" ]]; then
+      debug "    >> Applying filter $KEY13 to $VAL13"
+      $SED_I "s|$KEY13|$VAL13|g" ${NEWFILE}
     fi
 
   else
