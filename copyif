@@ -52,6 +52,14 @@ VAL14=${28}
 KEY15=${29}
 VAL15=${30}
 
+KEY16=${31}
+VAL16=${32}
+
+KEY17=${33}
+VAL17=${34}
+
+KEY18=${35}
+VAL18=${36}
 
 if [[ "$IFMISSING" == true ]] ; then
 
@@ -158,6 +166,21 @@ else
     if [[ "$KEY15" != "" ]]; then
       debug "    >> Applying filter $KEY15 to $VAL15"
       $SED_I "s|$KEY15|$VAL15|g" ${NEWFILE}
+    fi
+
+    if [[ "$KEY16" != "" ]]; then
+      debug "    >> Applying filter $KEY16 to $VAL16"
+      $SED_I "s|$KEY16|$VAL16|g" ${NEWFILE}
+    fi
+
+    if [[ "$KEY17" != "" ]]; then
+      debug "    >> Applying filter $KEY17 to $VAL17"
+      $SED_I "s|$KEY17|$VAL17|g" ${NEWFILE}
+    fi
+
+    if [[ "$KEY18" != "" ]]; then
+      debug "    >> Applying filter $KEY18 to $VAL18"
+      $SED_I "s|$KEY18|$VAL18|g" ${NEWFILE}
     fi
 
   else
