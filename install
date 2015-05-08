@@ -127,12 +127,14 @@ if [[ "$OS" == "redhat" ]] && [[ "$LAUNCHER_OWNER" != "$USER" ]]; then
   debug_all $DOCKER_OUTPUT
 fi
 
-TEMPLATE=./bits/docker/files/conf LOCATION=/etc/default/docker \
-  $SUDO ./bits/docker/copyif \
-  @DOCKER_BASE_SIZE@ $DOCKER_BASE_SIZE \
-  @DOCKER_LOOPDATA_SIZE@ $DOCKER_LOOPDATA_SIZE \
-  @DOCKER_LOOPMETADATA_SIZE@ $DOCKER_LOOPMETADATA_SIZE \
-  @DOCKER_ARGS@ $DOCKER_ARGS
+if [[ -e "/etc/default/docker" ]]; then
+  TEMPLATE=./bits/docker/files/conf LOCATION=/etc/default/docker \
+    $SUDO ./bits/docker/copyif \
+    @DOCKER_BASE_SIZE@ $DOCKER_BASE_SIZE \
+    @DOCKER_LOOPDATA_SIZE@ $DOCKER_LOOPDATA_SIZE \
+    @DOCKER_LOOPMETADATA_SIZE@ $DOCKER_LOOPMETADATA_SIZE \
+    @DOCKER_ARGS@ $DOCKER_ARGS
+fi
 
 notify "  -- Installing helper scripts"
 TEMPLATE=./bits/docker/files/bin LOCATION=$DOCKER_LAUNCHER_DIR ./bits/docker/copyallif

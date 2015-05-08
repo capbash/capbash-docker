@@ -1,0 +1,8 @@
+#!/bin/bash
+. capbashenv
+source logging
+
+NAME=${1-dev}
+
+eval "$(docker-machine env $NAME)"
+notify "Docker Machine configured for $NAME"
