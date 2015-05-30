@@ -159,4 +159,6 @@ else
   debug "  -- No /var/lib/docker found, so not chowning to $LAUNCHER_OWNER"
 fi
 
+DIR=./bits/docker ./bits/bootstrap/cleanup
+
 notify "DONE, Installing DOCKER."
